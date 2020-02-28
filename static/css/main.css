@@ -1,0 +1,29 @@
+.user_img{
+    padding-left: 20px;
+    padding-top: 20px;
+}
+.login_form{
+    margin: 0 auto;
+    text-align: center;
+}
+.login_email{
+
+}
+.login_head{
+    margin-top: 100px;
+}
+.passwd_err{
+    color: red;
+}
+.footer{
+    width: 100%;
+    height: 100px;
+    background-color: #3c3c3c;
+}
+.footer-p{
+    text-align: center;
+}
+.footer-span{
+    color: red;
+}
+

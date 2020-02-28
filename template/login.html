@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static from staticfiles %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>{% block title %}安妮JOKE--你见过我的小熊吗{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <link rel="stylesheet" href="{% static 'bootstrap-3.3.7-dist/css/bootstrap.css' %}">
+    <link rel="stylesheet" href="{% static 'bootstrap-3.3.7-dist/css/bootstrap-theme.css' %}">
+</head>
+<script src="{% static 'js/jquery-2.1.4.min.js' %}"></script>
+<script src="{% static 'bootstrap-3.3.7-dist/js/bootstrap.js' %}"></script>
+<body>
+    <div class="login container" id="header">
+
+        <div class="login_form login_head">
+            <h2><span>登陆</span>/<span>注册</span></h2>
+        </div>
+
+        <button type="button" id="MyModel" class="btn btn-primary" data-toggle="modal" data-target="#exampleModel">请登录/注册</button>
+
+
+        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">New message</h4>
+              </div>
+              <div class="modal-body">
+                <form>
+                  <div class="form-group">
+                    <label for="recipient-name" class="control-label">Recipient:</label>
+                    <input type="text" class="form-control" id="recipient-name">
+                  </div>
+                  <div class="form-group">
+                    <label for="message-text" class="control-label">Message:</label>
+                    <textarea class="form-control" id="message-text"></textarea>
+                  </div>
+                </form>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Send message</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+            <script>
+
+                $('#exampleModal').on('show.bs.modal', function (event) {
+                  var button = $(event.relatedTarget);// Button that triggered the modal
+                  var recipient = button.data('whatever');// Extract info from data-* attributes
+                  // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+                  // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+                  var modal = $(this);
+                  modal.find('.modal-title').text('New message to ' + recipient);
+                  modal.find('.modal-body input').val(recipient)
+                })
+            </script>
+
+        <form action="/login/" method="post" class="login_form" >
+            {% csrf_token %}
+            <h3>昵称： <input type="text" class="login_nickname" required width="25%" name="nickname"></h3>
+            <h3>邮箱： <input type="email" class="login_email" required width="25%" name="email"></h3>
+            <h3>密码： <input type="password" class="login_email" id="first_password" required width="25%" name="first_password"><span class="hidden passwd_err">密码长度不能小于8，并且必须包含字母数字</span></h3>
+            <h3>确认密码： <input type="password" class="login_email" id="second_password" required width="25%" name="second_password" onblur="$(function() {
+              let str_f = $('#first_password').val();
+              if (str_f.length < 8){
+
+              } ;
+              let str_s = $('#second_password').val();
+              if (str_f != str_s){
+                  $('#login_passwd_err').removeClass('hidden');
+                  $('#login_commit').attr('disabled', 'true');
+                  return false;
+              }
+              console.log('success');
+              $('#login_passwd_err').addClass('hidden');
+              $('#login_commit').removeAttr('disabled');
+              return true;
+            })">
+                <div class="glyphicon glyphicon-remove hidden" id="login_passwd_err"></div>
+                <div class="alert alert-danger" id="login_passwd_err" role="alert">两次输入密码不一致</div>
+            <div class="alert alert-warning alert-dismissible hidden" id="login_passwd_err" role="alert">
+              <strong>错误!</strong>两次输入密码不一致
+            </div>
+            </h3>
+            <input type="submit" value="提交" class="buttons" disabled id="login_commit" accesskey="enter">
+        </form>
+    </div>
+
+    <a href="">123</a>
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                        <h4 class="modal-title" id="myModalLabel">模态框（Modal）标题</h4>
+                    </div>
+                    <div class="modal-body">按下 ESC 按钮退出。</div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                        <button type="button" class="btn btn-primary">提交更改</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <script>
+        $(function() {
+            $('#myModal').modal('hide')
+        });
+</script>
+
+
+
+
+
+</body>
+</html>

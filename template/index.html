@@ -1,0 +1,467 @@
+{% load static from staticfiles %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>{% block title %}安妮JOKE--你见过我的小熊吗{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <link rel="stylesheet" href="{% static 'bootstrap-3.3.7-dist/css/bootstrap.css' %}">
+    <link rel="stylesheet" href="{% static 'bootstrap-3.3.7-dist/css/bootstrap-theme.css' %}">
+</head>
+<script src="{% static 'js/jquery-2.1.4.min.js' %}"></script>
+<script src="{% static 'bootstrap-3.3.7-dist/js/bootstrap.js' %}"></script>
+<body>
+
+    <div class="head">
+    {#  这是开始  #}
+        <nav class="navbar navbar-default">
+          <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              <a class="navbar-brand" href="#" title="安妮的Joke">AnneJoke</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+              <ul class="nav navbar-nav">
+                <li class="active"><a href="#">首页<span class="sr-only">(current)</span></a></li>
+                <li><a href="#">视频</a></li>
+    {#            <li class="dropdown">#}
+    {#              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>#}
+    {#              <ul class="dropdown-menu">#}
+    {#                <li><a href="#">Action</a></li>#}
+    {#                <li><a href="#">Another action</a></li>#}
+    {#                <li><a href="#">Something else here</a></li>#}
+    {#                <li role="separator" class="divider"></li>{# 分割线 #}
+    {#                <li><a href="#">Separated link</a></li>#}
+    {#                <li role="separator" class="divider"></li>{# 分割线 #}
+    {#                <li><a href="#">One more separated link</a></li>#}
+    {#              </ul>#}
+    {#            </li>#}
+              </ul>
+              <form class="navbar-form navbar-left " method="post">
+                  {% csrf_token %}
+                <div class="form-group">
+                  <input type="text" class="form-control" placeholder="今日份沙雕">
+                </div>
+                <button type="submit" class="btn btn-default ">搜索</button>
+              </form>
+              {% if username %}
+                  <ul class="nav navbar-nav navbar-right">
+                      <li><a class="navbar-brand" href="#">
+                          <p>{{ user_head_image }}</p>
+                            <img alt="Brand" class="img-circle" style="width: 30px; margin-top: -20px" src="/static/media/{{ head_image }}">
+                        </a></li>
+                    <li role="presentation"><a href="#">我的消息 <span class="badge" style="background-color: red">3</span></a></li>
+                    <li class="dropdown">
+                      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ username }} <span class="caret"></span></a>
+                      <ul class="dropdown-menu">
+                        <li><a href="#">我的资料</a></li>
+                        <li><a href="#">我的发布</a></li>
+                        <li><a href="#">我的关注</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="" id="user-logout">登出</a></li>
+                          <script>
+                              $('#user-logout').click(function () {
+                                   $.ajax({
+                                   url: "/login/",
+                                   async: false,
+                                   type: "delete",
+                                   data: {}
+                                })
+                                });
+                          </script>
+                      </ul>
+                    </li>
+                  </ul>
+                  {% else %}
+                  <ul class="nav navbar-nav navbar-right">
+{#                    <li><a href="/login/" class="btn-default" data-toggle="modal" data-target="#exampleModel">请登录/注册</a></li>#}
+                    <li><button type="button" id="LoginRegister" style="margin-top: 8px; margin-left: 10px" class="btn btn-default" data-toggle="modal" data-target="#exampleModal">登录</button></li>
+                    <li><button type="button" id="Register" style="margin-top: 8px;  margin-left: 10px" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">注册</button></li>
+                  </ul>
+
+                  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="margin-top: 200px">
+                      <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title" id="exampleModalLabel">登陆界面</h4>
+                          </div>
+                          <div class="modal-body">
+                            <form action="/login/" method="post">
+                                {% csrf_token %}
+                              <div class="form-group">
+                                <label for="recipient-name" class="control-label">账号：</label>
+                                <input type="text" name="email" class="form-control" id="recipient-name" required>
+                              </div>
+                              <div class="form-group">
+                                <label for="message-text" class="control-label">密码：</label>
+{#                                <textarea class="form-control" id="message-text"></textarea>#}
+                                  <input type="password" name="password" class="form-control" id="message-text" required>
+                              </div>
+
+                                <div class="form-group">
+                                <label for="message-text" class="control-label">验证码(字母只有小写)：</label>
+                                    <img src=""  alt="123" id="loadImages">
+                                    <div>
+                                      <input type="text" name="verify_code" class="form-control" style="width: 75%;" id="verify-code" required>
+                                        <div class="glyphicon glyphicon-ok hidden" id="isTrue" style="width: 25%; text-align: center; float: right; margin-top: -25px"></div>
+                                        <div class="glyphicon glyphicon-remove hidden" id="isFalse" style="width: 25%; text-align: center; float: right; margin-top: -25px"></div>
+                                    </div>
+                              </div>
+                                <script>
+
+                                        $("#LoginRegister").click(function () {
+                                            $("#isTrue").addClass("hidden");
+                                            $("#isFalse").addClass("hidden");
+                                            $.ajax({
+                                                url: '/loadimg/',
+                                                type: "post",
+                                                data: {},
+                                                success : function (result) {
+                                                    let dic = result.split(',') ;
+                                                    let code = dic[0].slice(2,-1).toLowerCase();
+                                                    $('#loadImages').attr('src', dic[1].slice(2)+','+dic[2].slice(2, -3));
+                                                    $("#verify-code").keyup(function () {
+                                                        let user_input_verfy = $("#verify-code").val();
+                                                        if (user_input_verfy !== code){
+                                                            $("#isFalse").removeClass('hidden');
+                                                            $("#isTrue").addClass("hidden");
+                                                            $('#login-commit').attr("disabled", "disabled");
+                                                        } else {
+                                                            $("#isTrue").removeClass("hidden");
+                                                            $("#isFalse").addClass('hidden');
+                                                            $("#login-commit").removeAttr("disabled")
+                                                        }
+                                                    });
+                                                }
+                                            })
+                                        });
+                                        $("#loadImages").click(function () {
+                                            $("#isFalse").attr('disabled', "disabled");
+                                            $("#isTrue").removeAttr("disabled");
+                                            $.ajax({
+                                                url: '/loadimg/',
+                                                type: "post",
+                                                data: {},
+                                                success: function (result) {
+                                                    let dic = result.split(',') ;
+                                                    let code = dic[0].slice(2,-1).toLowerCase();
+                                                    $("#loadImages").removeAttr("src");
+                                                    $('#loadImages').attr('src', dic[1].slice(2)+','+dic[2].slice(2, -3));
+                                                    $("#verify-code").keyup(function () {
+                                                        let user_input_verfy = $("#verify-code").val();
+                                                        console.log(user_input_verfy);
+                                                        if (user_input_verfy !== code){
+                                                            $("#isFalse").removeClass('hidden');
+                                                            $("#isTrue").addClass("hidden");
+                                                            $('#login-commit').attr("disabled", "disabled");
+                                                        } else {
+                                                            $("#isTrue").removeClass("hidden");
+                                                            $("#isFalse").addClass('hidden');
+                                                            $("#login-commit").removeAttr("disabled")
+                                                        }
+                                                    });
+                                                }
+                                            })
+                                        })
+
+
+                                    </script>
+
+{#                                <input type="submit" hidden id="login-submit">#}
+                            </form>
+                              <p id="login-message" style="color: red;"></p>
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                            <button type="button" disabled="false" id="login-commit" class="btn btn-primary">登陆</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  <script>
+                        $('#login-commit').click(function () {
+                            let usernamed = $("#recipient-name").val();
+                            let passworde = $("#message-text").val();
+                            console.log(usernamed, passworde);
+                            if (usernamed && passworde != null){
+                               $.ajax({
+                                    url: "/login/",
+                                    type: 'post',
+                                   async: false,
+                                    data: {
+                                        "email": $('#recipient-name').val(),
+                                        "password": $('#message-text').val(),
+                                        "verify": $("#verify-code").val(),
+                                        "csrfmiddlewaretoken": $('input[name="csrfmiddlewaretoken"]').val()
+                                    },
+                                    success: function (result) {
+                                        $("#login-message").text(result);
+                                        if (result === " ") {
+                                            location.reload()
+                                        }
+                                    }
+                                });
+                            }else {
+                                $("#login-message").text("账号或者密码不可为空！");
+                                $("#verify-code").click();
+                            }
+                            });
+
+
+                  </script>
+
+                {% endif %}
+            </div><!-- /.navbar-collapse -->
+          </div><!-- /.container-fluid -->
+        </nav>
+    {#  这是结束  #}
+    </div>
+    <div class="container">
+        {% block contents %}
+            <div class="row">
+              <div class="col-xs-12 ">
+
+              {% for joke in joke_page %}
+
+                <div class="thumbnail">
+                    <div class="user_img">
+                      <img src="/static/media/{{ joke.user.user_head_image }}" class="img-circle" style="width: 30px" alt="...">
+                        <a href="#">{{ joke }}</a>{# ----点击用户----- #}
+                    </div>
+                  <div class="caption">
+                      <p>{{ joke.joke_content }}</p>
+                          <img src="/static/media/{{ joke.joke_image }}" class="big-image" style="width: 300px" alt="加载失败">
+                    {% if username %}
+                    <p><br><a href="javascript:" class="btn btn-primary" id="fabulous{{ joke.id }}" role="button">点赞(999+)</a> <a href="javascript:" id="comment{{ joke.id }}" class="btn btn-default" role="button">评论(999+)</a> <a href="javascript:" id="setpon{{ joke.id }}" class="btn btn-danger" role="button">鄙视(999+)</a></p>
+                      {% else %}
+                    <p><br><a href="javascript:" class="btn btn-primary disabled" title="登陆畅想更多特权" disabled id="fabulous{{ joke.id }}" role="button">点赞(999+)</a> <a href="javascript:" id="comment{{ joke.id }}" class="btn btn-default" role="button">评论(999+)</a> <a href="javascript:" id="setpon{{ joke.id }}" class="btn btn-danger disabled" title="登陆畅想更多特权" disabled role="button">鄙视(999+)</a></p>
+                      {% endif %}
+                  </div>
+                </div>
+                  <script>
+                        $(function () {
+                            $.ajax({
+                            url: "/jokeic/",
+                            type: 'get',
+                            async: true,
+                            data: {
+                                "joke_id": {{ joke.id }}
+                            },
+                            success: function (result) {
+                                info = result.split(',');
+
+                                if (info.length > 3){
+
+                                    if (info[1] === '1' && info[3] === '0'){
+                                        $("#setpon{{ joke.id }}").addClass("disabled");
+                                        $("#setpon{{ joke.id }}").attr("disabled", "disabled");
+                                        $("#fabulous{{ joke.id }}").text('点赞成功('+info[0]+')');
+                                        $("#setpon{{ joke.id }}").text('点踩('+info[2]+')');
+                                        $("#comment{{ joke.id }}").text('评论('+info[4]+')');
+                                    }else if (info[1] === '0' && info[3] === '1') {
+                                        $("#fabulous{{ joke.id }}").addClass("disabled");
+                                        $("#fabulous{{ joke.id }}").attr("disabled", "disabled");
+                                        $("#fabulous{{ joke.id }}").text('点赞('+info[0]+')');
+                                        $("#setpon{{ joke.id }}").text('点踩成功('+info[2]+')');
+                                        $("#comment{{ joke.id }}").text('评论('+info[4]+')');
+                                    } else if (info[1] === '1' && info[3] === '1') {
+                                        $("#fabulous{{ joke.id }}").addClass("disabled");
+                                        $("#fabulous{{ joke.id }}").attr("disabled", "disabled");
+                                        $("#setpon{{ joke.id }}").addClass("disabled");
+                                        $("#setpon{{ joke.id }}").attr("disabled", "disabled");
+                                        $("#fabulous{{ joke.id }}").text('点赞成功('+info[0]+')');
+                                        $("#setpon{{ joke.id }}").text('点踩成功('+info[2]+')');
+                                        $("#comment{{ joke.id }}").text('评论('+info[4]+')');
+                                    }else {
+                                        $("#fabulous{{ joke.id }}").text('点赞('+info[0]+')');
+                                        $("#setpon{{ joke.id }}").text('点踩('+info[1]+')');
+                                        $("#comment{{ joke.id }}").text('评论('+info[2]+')');
+                                    }
+
+
+                                }else {
+                                    $("#fabulous{{ joke.id }}").text('点赞('+info[0]+')');
+                                    $("#setpon{{ joke.id }}").text('点踩('+info[1]+')');
+                                    $("#comment{{ joke.id }}").text('评论('+info[2]+')');
+                            }}
+                        });
+                        });
+
+
+                        $('#fabulous{{ joke.id }}').click(function () {
+                            let va = $('#fabulous{{ joke.id }}').text();
+                            let cancel_fabulous = va.slice(0,4);
+                            if (cancel_fabulous === "点赞成功"){
+                                $("#fabulous{{ joke.id }}").click(
+                                    cancel_fabulous_setpon({{ joke.id }}, 1, va.slice(5, -1)),
+                                    $('#setpon{{ joke.id }}').removeAttr("disabled"),
+                                    $('#setpon{{ joke.id }}').removeClass("disabled"),
+                                )
+                            }else {
+                                let num = va.slice(3, -1);
+                                fabulous_setpon({{ joke.id }}, 1, num);
+                                $("#setpon{{ joke.id }}").attr('disabled', "disabled");
+                                $("#setpon{{ joke.id }}").addClass("disabled");
+                                {#$("#setpon{{ joke.id }}").unbind("click");#}
+                            }
+                        });
+                        $("#setpon{{ joke.id }}").click(function () {
+                            let va = $('#setpon{{ joke.id }}').text();
+                            let cancel_setp_on = va.slice(0,4);
+                            if (cancel_setp_on === "点踩成功"){
+                                $("#setpon{{ joke.id }}").click(
+                                    cancel_fabulous_setpon({{ joke.id }}, 2, va.slice(5, -1)),
+                                    $('#fabulous{{ joke.id }}').removeAttr("disabled"),
+                                    $('#fabulous{{ joke.id }}').removeClass("disabled"),
+                                )
+                            }else {
+                                let num = va.slice(3, -1);
+                                fabulous_setpon({{ joke.id }}, 2,  num);
+                                $("#fabulous{{ joke.id }}").attr('disabled', "disabled");
+                                $("#fabulous{{ joke.id }}").addClass("disabled")
+                            }
+                                {#$("#fabulous{{ joke.id }}").unbind("click");#}
+                        });
+
+                        {#let str1 = $("#fabulous{{ joke.id }}").text();#}
+                        {#let str2 = $("#setpon{{ joke.id }}").text();#}
+                        {#console.log(str1, str2);#}
+                        {#if (str1.slice(0,3) === "赞过了"){#}
+                        {#    $("#setpon{{ joke.id }}").click(cancel_fabulous_setpon({{ joke.id }}, 1, info[0]))}#}
+                        {##}
+                        {#if (str2.slice(0,3) === "踩过了"){#}
+                        {#    $("#setpon{{ joke.id }}").click(cancel_fabulous_setpon({{ joke.id }}, 2, info[2]))}#}
+
+
+                  </script>
+              {% empty %}
+                  <p style="text-align: center">------------底线-------------</p>
+              {% endfor %}
+
+
+              </div>
+            </div>
+        {% endblock %}
+        </div>
+
+    <div id="outerdiv" style="position:fixed;top:0;left:0;background:rgba(0,0,0,0.7);z-index:2;width:100%;height:100%;display:none;">
+    <div id="innerdiv" style="position:absolute;">
+        <img id="bigimg" style="border:5px solid #fff;" src="" />
+    </div>
+    </div>
+
+    <div class="footer">
+        <p class="footer-p" style="text-align: center">网站归属权为个人所有，如有侵犯版权，请立即联系站长删除 邮箱：<a style="color:red;" href="mailto:skrlen@foxmail.com">skrlen@foxmail.com</a></p>
+    </div>
+
+    <script>
+
+        $(function () {
+            $('#exampleModal').modal('hide')
+        });
+
+        $('#exampleModal').on('show.bs.modal', function (event) {
+          var button = $(event.relatedTarget);
+          var recipient = button.data('whatever');
+          var modal = $(this);
+          modal.find('.modal-body input').val(recipient)
+        });
+        function fabulous_setpon (joke_id, joke_type, now_count ){
+            $.ajax({
+                url: '/jokeic/',
+                type: 'post',
+                {#async: false,#}
+                data: {
+                    "joke_id": joke_id,
+                    "data_type": joke_type
+                },
+                success: function (result) {
+                    if (joke_type === 1){
+                        $("#fabulous"+joke_id).text(result+'('+(parseInt(now_count)+1)+')')
+                    }else {
+                        $("#setpon"+joke_id).text(result+'('+(parseInt(now_count)+1)+')')
+                    }
+                }
+            })
+        }
+        function cancel_fabulous_setpon (joke_id, joke_type, now_count ){
+            $.ajax({
+                url: '/jokeic/',
+                type: 'delete',
+                {#async: false,#}
+                data: {
+                    "joke_id": joke_id,
+                    "data_type": joke_type
+                },
+                success: function (result) {
+                    if (joke_type === 1){
+                        $("#fabulous"+joke_id).text('点赞('+(parseInt(now_count)-1)+')')
+                    }else {
+                        $("#setpon"+joke_id).text('点踩('+(parseInt(now_count)-1)+')')
+                    }
+                }
+            })
+        }
+    </script>
+
+<script>
+    $(function(){
+        $(".big-image").click(function(){
+            var _this = $(this);//将当前的pimg元素作为_this传入函数
+            imgShow("#outerdiv", "#innerdiv", "#bigimg", _this);
+        });
+    });
+
+    function imgShow(outerdiv, innerdiv, bigimg, _this){
+        var src = _this.attr("src");//获取当前点击的pimg元素中的src属性
+        $(bigimg).attr("src", src);//设置#bigimg元素的src属性
+
+            /*获取当前点击图片的真实大小，并显示弹出层及大图*/
+        $("<img/>").attr("src", src).load(function(){
+            var windowW = $(window).width();//获取当前窗口宽度
+            var windowH = $(window).height();//获取当前窗口高度
+            var realWidth = this.width;//获取图片真实宽度
+            var realHeight = this.height;//获取图片真实高度
+            var imgWidth, imgHeight;
+            var scale = 0.8;//缩放尺寸，当图片真实宽度和高度大于窗口宽度和高度时进行缩放
+
+            if(realHeight>windowH*scale) {//判断图片高度
+                imgHeight = windowH*scale;//如大于窗口高度，图片高度进行缩放
+                imgWidth = imgHeight/realHeight*realWidth;//等比例缩放宽度
+                if(imgWidth>windowW*scale) {//如宽度扔大于窗口宽度
+                    imgWidth = windowW*scale;//再对宽度进行缩放
+                }
+            } else if(realWidth>windowW*scale) {//如图片高度合适，判断图片宽度
+                imgWidth = windowW*scale;//如大于窗口宽度，图片宽度进行缩放
+                            imgHeight = imgWidth/realWidth*realHeight;//等比例缩放高度
+            } else {//如果图片真实高度和宽度都符合要求，高宽不变
+                imgWidth = realWidth;
+                imgHeight = realHeight;
+            }
+                    $(bigimg).css("width",imgWidth);//以最终的宽度对图片缩放
+
+            var w = (windowW-imgWidth)/2;//计算图片与窗口左边距
+            var h = (windowH-imgHeight)/2;//计算图片与窗口上边距
+            $(innerdiv).css({"top":h, "left":w});//设置#innerdiv的top和left属性
+            $(outerdiv).fadeIn("fast");//淡入显示#outerdiv及.pimg
+        });
+
+        $(outerdiv).click(function(){//再次点击淡出消失弹出层
+            $(this).fadeOut("fast");
+        });
+    }
+</script>
+
+</body>
+</html>
