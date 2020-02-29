@@ -232,6 +232,7 @@
             <div class="row">
               <div class="col-xs-12 ">
 
+
               {% for joke in joke_page %}
 
                 <div class="thumbnail">
@@ -241,7 +242,8 @@
                     </div>
                   <div class="caption">
                       <p>{{ joke.joke_content }}</p>
-                          <img src="/static/media/{{ joke.joke_image }}" class="big-image" style="width: 300px" alt="加载失败">
+                      <br><br>
+                          <img src="/static/media/{{ joke.joke_image }}" class="big-image" style="width: 300px; display: table; margin: 0 auto" alt="加载失败">
                     {% if username %}
                     <p><br><a href="javascript:" class="btn btn-primary" id="fabulous{{ joke.id }}" role="button">点赞(999+)</a> <a href="javascript:" id="comment{{ joke.id }}" class="btn btn-default" role="button">评论(999+)</a> <a href="javascript:" id="setpon{{ joke.id }}" class="btn btn-danger" role="button">鄙视(999+)</a></p>
                       {% else %}
@@ -249,6 +251,7 @@
                       {% endif %}
                   </div>
                 </div>
+
                   <script>
                         $(function () {
                             $.ajax({
@@ -360,6 +363,58 @@
         <img id="bigimg" style="border:5px solid #fff;" src="" />
     </div>
     </div>
+    <p>{{ joke_list.length }}</p>
+
+        <nav aria-label="Page navigation" class="container" style="text-align: center;">
+          <ul class="pagination">
+              {% if joke_index == 1 %}
+                    <li class="disabled ">
+                      <a href="javascript:" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                      </a>
+                    </li>
+              {% else %}
+                      <li>
+                          <a href="/index/?page={{ joke_index|add:-1 }}" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                          </a>
+                        </li>
+              {% endif %}
+                <li><a href="javascript:">{{ joke_index }}/{{ all_page }}</a></li>
+              {% if joke_index == all_page %}
+                  <li class="disabled">
+                      <a href="javascript:" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                      </a>
+                  </li>
+                  {% else %}
+                  <li>
+                      <a href="/index/?page={{ joke_index|add:1 }}" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                      </a>
+                  </li>
+              {% endif %}
+                <li style="margin-left: 30px">跳转至第
+                    <input type="number" style="width: 30px" id="pages" value="{{ joke_index }}"  name="page_turning">页
+                        <input type="submit" class="btn btn-default" value="跳" id="enter_page">
+                </li>
+              <script>
+                  $("#enter_page").click(function () {
+                      let page = parseInt($("#pages").val());
+                      console.log(typeof page, page);
+                      if (page<1){
+                          alert('请输入大于0的整数')
+                      } else if(page > {{ all_page }}){
+                          alert('请输入小于页码总数的整数')
+                      }else {
+                          window.location.href = '/index/?page='+page
+                      }
+                  })
+              </script>
+
+
+          </ul>
+        </nav>
 
     <div class="footer">
         <p class="footer-p" style="text-align: center">网站归属权为个人所有，如有侵犯版权，请立即联系站长删除 邮箱：<a style="color:red;" href="mailto:skrlen@foxmail.com">skrlen@foxmail.com</a></p>
