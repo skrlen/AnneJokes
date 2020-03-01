@@ -8,7 +8,7 @@ from AnneJokes.views.joke_info_count import JokeInfoCount
 
 
 urlpatterns = [
-    # url(r'', Index.as_view()),
+    url(r'^$', Index.as_view()),
     url(r'^index/$', Index.as_view()),
     url(r'^login/$', UserLogin.as_view()),
     url(r'^loadimg/$', LoadImage.as_view()),
