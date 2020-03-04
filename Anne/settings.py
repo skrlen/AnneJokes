@@ -132,7 +132,7 @@ FONT = os.path.join(BASE_DIR, 'static/bootstrap-3.3.7-dist/fonts/BitCheese10(sRB
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
-
+STATIC_ROOT = '/root/AnneJokes/staticroot'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'static/media')
 
