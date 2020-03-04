@@ -1,19 +1,21 @@
 {% load static from staticfiles %}
+{% block con-head %}
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>{% block title %}安妮JOKE--你见过我的小熊吗{% endblock %}</title>
+    <title>{% block title %}安妮JOKE--你见过我的小熊吗{% endblock title %}</title>
     <link rel="stylesheet" href="{% static 'css/main.css' %}">
     <link rel="stylesheet" href="{% static 'bootstrap-3.3.7-dist/css/bootstrap.css' %}">
     <link rel="stylesheet" href="{% static 'bootstrap-3.3.7-dist/css/bootstrap-theme.css' %}">
 </head>
 <script src="{% static 'js/jquery-2.1.4.min.js' %}"></script>
 <script src="{% static 'bootstrap-3.3.7-dist/js/bootstrap.js' %}"></script>
+{% endblock con-head %}
 <body>
-
+    {% block header %}
     <div class="head">
     {#  这是开始  #}
         <nav class="navbar navbar-default">
@@ -26,13 +28,13 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
               </button>
-              <a class="navbar-brand" href="#" title="安妮的Joke">AnneJoke</a>
+              <a class="navbar-brand" href="/index/" title="安妮的Joke">AnneJoke</a>
             </div>
 
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
               <ul class="nav navbar-nav">
-                <li class="active"><a href="#">首页<span class="sr-only">(current)</span></a></li>
+                <li class="active"><a href="/index/">首页<span class="sr-only">(current)</span></a></li>
                 <li><a href="#">视频</a></li>
     {#            <li class="dropdown">#}
     {#              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>#}
@@ -52,7 +54,7 @@
                 <div class="form-group">
                   <input type="text" class="form-control" placeholder="今日份沙雕">
                 </div>
-                <button type="submit" class="btn btn-default ">搜索</button>
+                <button type="submit" class="btn btn-default " disabled>搜索</button>
               </form>
               {% if username %}
                   <ul class="nav navbar-nav navbar-right">
@@ -69,13 +71,18 @@
                         <li><a href="#">我的关注</a></li>
                         <li role="separator" class="divider"></li>
                         <li><a href="" id="user-logout">登出</a></li>
+                          <form action="">
+                              {% csrf_token %}
+                          </form>
                           <script>
                               $('#user-logout').click(function () {
                                    $.ajax({
                                    url: "/login/",
                                    async: false,
                                    type: "delete",
-                                   data: {}
+                                   data: {
+                                       "csrfmiddlewaretoken": $('input[name="csrfmiddlewaretoken"]').val()
+                                   }
                                 })
                                 });
                           </script>
@@ -86,14 +93,14 @@
                   <ul class="nav navbar-nav navbar-right">
 {#                    <li><a href="/login/" class="btn-default" data-toggle="modal" data-target="#exampleModel">请登录/注册</a></li>#}
                     <li><button type="button" id="LoginRegister" style="margin-top: 8px; margin-left: 10px" class="btn btn-default" data-toggle="modal" data-target="#exampleModal">登录</button></li>
-                    <li><button type="button" id="Register" style="margin-top: 8px;  margin-left: 10px" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">注册</button></li>
+                    <li><button type="button" id="Register" style="margin-top: 8px;  margin-left: 10px" class="btn btn-primary" data-toggle="modal" data-target="#RegisterModal">注册</button></li>
                   </ul>
 
                   <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="margin-top: 200px">
                       <div class="modal-dialog" role="document">
                         <div class="modal-content">
                           <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span id="hidden-login" aria-hidden="true">&times;</span></button>
                             <h4 class="modal-title" id="exampleModalLabel">登陆界面</h4>
                           </div>
                           <div class="modal-body">
@@ -101,7 +108,7 @@
                                 {% csrf_token %}
                               <div class="form-group">
                                 <label for="recipient-name" class="control-label">账号：</label>
-                                <input type="text" name="email" class="form-control" id="recipient-name" required>
+                                <input type="email" name="email" class="form-control" id="recipient-name" required>
                               </div>
                               <div class="form-group">
                                 <label for="message-text" class="control-label">密码：</label>
@@ -126,7 +133,9 @@
                                             $.ajax({
                                                 url: '/loadimg/',
                                                 type: "post",
-                                                data: {},
+                                                data: {
+                                                    "csrfmiddlewaretoken": $('input[name="csrfmiddlewaretoken"]').val()
+                                                },
                                                 success : function (result) {
                                                     let dic = result.split(',') ;
                                                     let code = dic[0].slice(2,-1).toLowerCase();
@@ -152,7 +161,9 @@
                                             $.ajax({
                                                 url: '/loadimg/',
                                                 type: "post",
-                                                data: {},
+                                                data: {
+                                                    "csrfmiddlewaretoken": $('input[name="csrfmiddlewaretoken"]').val()
+                                                },
                                                 success: function (result) {
                                                     let dic = result.split(',') ;
                                                     let code = dic[0].slice(2,-1).toLowerCase();
@@ -183,6 +194,14 @@
                               <p id="login-message" style="color: red;"></p>
                           </div>
                           <div class="modal-footer">
+                              <a href="javascript:" id="login-register">没有账号？点此注册！</a>
+                              <a href="/retrieve/">忘了密码？点此找回！</a>
+                              <script>
+                                  $("#login-register").click(function () {
+                                      $("#hidden-login").click();
+                                      $("#Register").click();
+                                  })
+                              </script>
                             <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
                             <button type="button" disabled="false" id="login-commit" class="btn btn-primary">登陆</button>
                           </div>
@@ -193,15 +212,14 @@
                         $('#login-commit').click(function () {
                             let usernamed = $("#recipient-name").val();
                             let passworde = $("#message-text").val();
-                            console.log(usernamed, passworde);
                             if (usernamed && passworde != null){
                                $.ajax({
                                     url: "/login/",
                                     type: 'post',
                                    async: false,
                                     data: {
-                                        "email": $('#recipient-name').val(),
-                                        "password": $('#message-text').val(),
+                                        "email": usernamed,
+                                        "password": passworde,
                                         "verify": $("#verify-code").val(),
                                         "csrfmiddlewaretoken": $('input[name="csrfmiddlewaretoken"]').val()
                                     },
@@ -221,14 +239,219 @@
 
                   </script>
 
+
+{#                ----------------------------  注册界面     -------------------------------             #}
+
+                  <div class="modal fade" id="RegisterModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="margin-top: 200px">
+                      <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span id="hidden-register" aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title" id="exampleModalLabel">注册界面</h4>
+                          </div>
+                          <div class="modal-body">
+                            <form action="/register/" method="post" enctype="multipart/form-data">
+                                {% csrf_token %}
+
+                                <div class="form-group">
+                                <label for="message-text" class="control-label">头像：<span id="headimg_err"></span></label>
+{#                                <textarea class="form-control" id="message-text"></textarea>#}
+                                  <input type="file" name="headimage" accept="image/jpeg, image/png" class="form-control" id="headimage" required>
+                              </div>
+
+                                <div class="form-group">
+                                <label for="message-text" class="control-label">昵称：<span id="nickname_err"></span></label>
+{#                                <textarea class="form-control" id="message-text"></textarea>#}
+                                  <input type="text" name="nickname" class="form-control" id="nickname" required>
+                              </div>
+                                <script>
+                                      $("#nickname").blur(function () {
+                                          let name = $("#nickname").val();
+                                          console.log(name.length);
+                                          $.ajax({
+                                              url: "/register/",
+                                              type: "get",
+                                              data: {
+                                                  "nickname": $("#nickname").val(),
+                                              },
+                                              success: function (result) {
+                                                  if (result === "false"){
+                                                      $("#nickname_err").attr('style', "color: red").text("该昵称已经被占用了，请重新输入");
+                                                  } else {
+                                                      $("#nickname_err").attr('style', "color: blue").text("可以使用的昵称");
+                                                  }
+
+                                              }
+                                          })
+                                      })
+                                  </script>
+
+                              <div class="form-group">
+                                <label for="recipient-name" class="control-label">邮箱：<span id="register-email"></span></label>
+                                <input type="email" name="email" class="form-control" id="register-recipient-name" required>
+                                  <script>
+                                      $("#register-recipient-name").blur(function () {
+                                          $.ajax({
+                                              url: "/register/",
+                                              type: "get",
+                                              data: {
+                                                  "email": $("#register-recipient-name").val()
+                                              },
+                                              success: function (result) {
+                                                  if (result === "false"){
+                                                      $("#register-email").attr('style', "color: red").text("该账户已经被使用了，请重新输入");
+                                                  } else {
+                                                      $("#register-email").attr('style', "color: blue").text("可以使用的账号");
+                                                  }
+
+                                              }
+                                          })
+                                      })
+                                  </script>
+                              </div>
+                              <div class="form-group">
+                                <label for="message-text" class="control-label">密码：</label>
+{#                                <textarea class="form-control" id="message-text"></textarea>#}
+                                  <input type="password" name="first-password" class="form-control" id="register-message-text" required>
+                              </div>
+                                <div class="form-group">
+                                <label for="message-text" class="control-label">重复密码：<span style="color: red"  class="hidden" id="register2-message-error">两次输入密码不一致，请检查之后重新输入</span></label>
+{#                                <textarea class="form-control" id="message-text"></textarea>#}
+                                  <input type="password" name="second-password" class="form-control" id="register2-message-text" required>
+                              </div>
+                                <script>
+                                    $("#register2-message-text").keyup(function () {
+                                        if ($("#register-message-text").val() !== $("#register2-message-text").val()){
+                                            $("#register2-message-error").removeClass("hidden");
+                                        } else {
+                                            $("#register2-message-error").addClass("hidden");
+                                        }
+                                    })
+
+                                </script>
+
+                                <div class="form-group">
+                                <label for="message-text" class="control-label">验证码(字母只有小写)：</label>
+                                    <img src=""  alt="123" id="register_loadImages">
+                                    <div>
+                                      <input type="text" name="verify_code" class="form-control" style="width: 75%;" id="register-verify-code" required>
+                                        <div class="glyphicon glyphicon-ok hidden" id="register-isTrue" style="width: 25%; text-align: center; float: right; margin-top: -25px"></div>
+                                        <div class="glyphicon glyphicon-remove hidden" id="register-isFalse" style="width: 25%; text-align: center; float: right; margin-top: -25px"></div>
+                                    </div>
+                              </div>
+                                <script>
+
+                                        $("#Register").click(function () {
+                                            $("#register-isTrue").addClass("hidden");
+                                            $("#register-isFalse").addClass("hidden");
+                                            $.ajax({
+                                                url: '/loadimg/',
+                                                type: "post",
+                                                data: {
+                                                    "csrfmiddlewaretoken": $('input[name="csrfmiddlewaretoken"]').val()
+                                                },
+                                                success : function (result) {
+                                                    let dic = result.split(',') ;
+                                                    let code = dic[0].slice(2,-1).toLowerCase();
+                                                    $('#register_loadImages').attr('src', dic[1].slice(2)+','+dic[2].slice(2, -3));
+                                                    $("#register-verify-code").keyup(function () {
+                                                        let passworde2 = $("#register2-message-text").val();
+                                                        let passworde = $("#register-message-text").val();
+                                                        if (passworde !== passworde2) {
+                                                            $('#register-commit').attr("disabled", "disabled");
+                                                        }else{
+                                                        let user_input_verfy = $("#register-verify-code").val();
+                                                        if (user_input_verfy !== code){
+                                                            $("#register-isFalse").removeClass('hidden');
+                                                            $("#register-isTrue").addClass("hidden");
+                                                            $('#register-commit').attr("disabled", "disabled");
+                                                        } else {
+                                                            $("#register-isTrue").removeClass("hidden");
+                                                            $("#register-isFalse").addClass('hidden');
+                                                            $("#register-commit").removeAttr("disabled")
+                                                        }}
+                                                    });
+                                                }
+                                            })
+                                        });
+                                        $("#register_loadImages").click(function () {
+                                            $("#register-isFalse").attr('disabled', "disabled");
+                                            $("#register-isTrue").removeAttr("disabled");
+                                            $.ajax({
+                                                url: '/loadimg/',
+                                                type: "post",
+                                                data: {
+                                                    "csrfmiddlewaretoken": $('input[name="csrfmiddlewaretoken"]').val()
+                                                },
+                                                success: function (result) {
+                                                    let dic = result.split(',') ;
+                                                    let code = dic[0].slice(2,-1).toLowerCase();
+                                                    $("#register_loadImages").removeAttr("src");
+                                                    $('#register_loadImages').attr('src', dic[1].slice(2)+','+dic[2].slice(2, -3));
+                                                    $("#register-verify-code").keyup(function () {
+                                                        let user_input_verfy = $("#register-verify-code").val();
+                                                        console.log(user_input_verfy);
+                                                        let passworde2 = $("#register2-message-text").val();
+                                                        let passworde = $("#register-message-text").val();
+                                                        if (passworde !== passworde2) {
+                                                            $('#register-commit').attr("disabled", "disabled");
+                                                        }else{
+                                                        if (user_input_verfy !== code){
+                                                            $("#register-isFalse").removeClass('hidden');
+                                                            $("#register-isTrue").addClass("hidden");
+                                                            $('#register-commit').attr("disabled", "disabled");
+                                                        } else {
+                                                            $("#register-isTrue").removeClass("hidden");
+                                                            $("#register-isFalse").addClass('hidden');
+                                                            $("#register-commit").removeAttr("disabled")
+                                                        }}
+                                                    });
+                                                }
+                                            })
+                                        })
+
+
+                                    </script>
+
+                                <input type="submit" hidden id="register-submit">
+                            </form>
+                              <p id="register-message" style="color: red;"></p>
+                          </div>
+                          <div class="modal-footer">
+                              <a href="javascript:" id="register-login">已有账号？点此登陆。</a>
+                              <script>
+                                  $("#register-login").click(function () {
+                                      $("#hidden-register").click();
+                                      $("#LoginRegister").click();
+                                  })
+                              </script>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                            <button type="button" disabled="false" id="register-commit" class="btn btn-primary">注册</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                  <script>
+                        $('#register-commit').click(function () {
+                            $("#register-submit").click()
+                            });
+
+
+                  </script>
+
+{#               ---------------------------   注册界面    --------------------------------              #}
+
+
                 {% endif %}
             </div><!-- /.navbar-collapse -->
           </div><!-- /.container-fluid -->
         </nav>
     {#  这是结束  #}
     </div>
+    {% endblock header %}
+    {% block container %}
     <div class="container">
-        {% block contents %}
             <div class="row">
               <div class="col-xs-12 ">
 
@@ -355,9 +578,10 @@
 
               </div>
             </div>
-        {% endblock %}
-        </div>
 
+        </div>
+{% endblock container %}
+    {% block page %}
     <div id="outerdiv" style="position:fixed;top:0;left:0;background:rgba(0,0,0,0.7);z-index:2;width:100%;height:100%;display:none;">
     <div id="innerdiv" style="position:absolute;">
         <img id="bigimg" style="border:5px solid #fff;" src="" />
@@ -415,10 +639,12 @@
 
           </ul>
         </nav>
-
+    {% endblock page %}
+    {% block footer %}
     <div class="footer">
         <p class="footer-p" style="text-align: center">网站归属权为个人所有，如有侵犯版权，请立即联系站长删除 邮箱：<a style="color:red;" href="mailto:skrlen@foxmail.com">skrlen@foxmail.com</a></p>
     </div>
+    {% endblock footer %}
 
     <script>
 

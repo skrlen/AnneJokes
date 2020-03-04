@@ -1,3 +1,4 @@
+# -*-coding:utf-8 -*-
 """
 Django settings for Anne project.
 
@@ -23,9 +24,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '_+dz@qp0@ekl$%&djmwsay4=g!ov6wd-mzofrz$h)n-ktsuxm)'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -45,10 +46,11 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    # 'django.middleware.csrf.CsrfViewMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'AnneJokes.delete_middleware.delete_middle.HttpPost2HttpOtherMiddleware',
 ]
 
 ROOT_URLCONF = 'Anne.urls'
@@ -138,4 +140,12 @@ DIRS = os.path.join(BASE_DIR, 'AnneJokes/script/loadImage')
 # LOG_PATH = os.path.join(BASE_DIR, 'log')
 # if not os.path.join(LOG_PATH):
 #     os.mkdir(LOG_PATH)
-
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
+EMAIL_HOST = 'smtp.126.com'
+EMAIL_PORT = 25
+EMAIL_HOST_USER = 'skrlen@126.com'
+# EMAIL_HOST_PASSWORD = 'Ren19980524.'
+EMAIL_HOST_PASSWORD = 'ren190199'
+DEFAULT_FROM_EMAIL = 'AnneJoke<skrlen@126.com>'

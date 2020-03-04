@@ -1,0 +1,22 @@
+{% extends 'index.html' %}
+{% load static from staticfiles %}
+{% block title %}
+    注册
+{% endblock title %}
+<body>
+{% block container %}
+    <div class="jumbotron">
+    <div class="container">
+        <h3>尊敬的用户您好！</h3>
+        {% if message %}
+        <p>{{ message }}</p>
+            {% else %}
+            <p>404 NOT FOUND</p>
+        {% endif %}
+    </div>
+    </div>
+{% endblock container %}
+{% block page %}
+{% endblock page %}
+</body>
+</html>

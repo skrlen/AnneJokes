@@ -15,4 +15,4 @@ class User(models.Model):
     modify_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.nickname
+        return '%s-%s' % (self.nickname, self.id)
