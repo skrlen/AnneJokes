@@ -34,7 +34,7 @@ class Register(View):
                 nickname = request.POST['nickname']
                 headimage = request.FILES['headimage']
                 password_md5 = str_md5(password)
-                user = User.objects.create(email=email, password=password_md5, nickname=nickname, user_head_image=headimage)
+                user = User.objects.create(email=email, password=password_md5, nickname=nickname, user_head_image=headimage, user_state=True)
                 user.save()
                 # activate_str = str_md5(email)
                 # title = "AnneJoke<skrlen@126.com>"
