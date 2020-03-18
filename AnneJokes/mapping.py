@@ -1,5 +1,5 @@
 """
-绘图模块
+绘图模块，用于绘制验证码
 """
 from PIL import Image, ImageDraw, ImageFont
 import random, io

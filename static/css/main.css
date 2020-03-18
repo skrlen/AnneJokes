@@ -25,4 +25,8 @@
 .footer-span{
     color: red;
 }
-
+.upload-form{
+    margin: 0 auto;
+    text-align: center;
+    border: 1px solid #c1e2b3;
+}

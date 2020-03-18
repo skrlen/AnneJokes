@@ -8,12 +8,14 @@
 {% block container %}
     <div class="jumbotron">
     <div class="container">
-        <h3>尊敬的用户您好！</h3>
+        <div style="margin: 0 auto; text-align: center">
+        <h3>{{ title }}</h3>
         {% if message %}
         <p>{{ message }}</p>
             {% else %}
             <p>404 NOT FOUND</p>
         {% endif %}
+        </div>
     </div>
     </div>
 {% endblock container %}

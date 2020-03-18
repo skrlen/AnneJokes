@@ -3,14 +3,12 @@ from django.views import View
 from AnneJokes.models.user import User
 from django.http.response import HttpResponse
 from AnneJokes.method.hashlib_md5 import str_md5
-from django.views.decorators.csrf import csrf_exempt
-from django.utils.decorators import method_decorator
 
 
-@method_decorator(csrf_exempt, name='dispatch')
 class UserLogin(View):
     def get(self, request):
-        return HttpResponse('{"state": 4, "message": "请求错误"}')
+        request.session.clear()
+        return render(request, 'index.html')
 
     def post(self, request):
         if 'verify' in request.session._session:
@@ -31,9 +29,6 @@ class UserLogin(View):
         else:
             return HttpResponse('验证码错误，请重新输入', 4)
 
-    def delete(self, request):
-        request.session.clear()
-        return render(request, 'index.html')
 
 
 

@@ -1,0 +1,43 @@
+{% extends 'index.html' %}
+{% load static from staticfiles %}
+{% block title %}
+    投稿生活中的趣事
+{% endblock title %}
+<body>
+{% block container %}
+    {% if username %}
+    <div class="container">
+        <h2 style="text-align: center">投稿界面</h2>
+        <form action="/upload/" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div style="margin-top: 50px">
+        <div class="form-row" style="border-bottom: #e3e3e3 1px solid; margin-top: 30px">
+            <label for="contents" class="required" style="font-weight: bold; float: left; padding: 4px 10px 0 0; width: 160px; font-size: 24px">内容:</label>
+            <textarea name="content" id="contents" cols="45" rows="6" required style="box-sizing: border-box"></textarea>
+        </div>
+        <div class="form-row" style="border-bottom: #e3e3e3 1px solid; margin-top: 30px; height: 70px">
+            <label for="upload_image" class="required" style="font-weight: bold; float: left; padding: 4px 10px 0 0; width: 160px; font-size: 24px">图片:</label>
+            <input type="file" id="upload_image" name="image" accept="image/*" >
+        </div>
+            <div class="form-row" style="margin-top: 30px">
+                <a href="/index/" class="btn btn-default" style="margin-left: 20%">取消</a>
+                <input type="submit" value="提交" class="btn btn-primary" style="margin-left: 50px">
+            </div>
+        </div>
+
+    </form>
+    </div>
+    {% else %}
+        <div style="margin: 0 auto; text-align: center">
+        <h2>未登录!</h2>
+        <h4>登陆才能发表哦!OVO!</h4>
+        </div>
+    {% endif %}
+{% endblock container %}
+{% block page %}
+{% endblock page %}
+{% block footer %}
+
+{% endblock footer %}
+</body>
+</html>
