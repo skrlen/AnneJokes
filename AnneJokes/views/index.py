@@ -16,7 +16,7 @@ class Index(View):
             date['username'] = user.nickname
             date['head_image'] = user.user_head_image.name
             date['user_level'] = user.user_level
-            page, plist, index = pager(index)
+            page, plist, index = pager(index, user=user)
             date['joke_page'] = page
             page1 = [str(p) for p in plist]
             date['joke_list'] = page1

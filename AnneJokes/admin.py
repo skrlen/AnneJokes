@@ -4,6 +4,7 @@ from AnneJokes.models.user_information import UserInformation
 from AnneJokes.models.user_joke import UserJokes
 from AnneJokes.models.joke_info import JokeInfo
 from AnneJokes.models.joke_comment import JokeComment
+from AnneJokes.models.user_joke_read import UserJokeRead
 
 
 # Register your models here.
@@ -13,3 +14,4 @@ admin.site.register(UserInformation)
 admin.site.register(UserJokes)
 admin.site.register(JokeInfo)
 admin.site.register(JokeComment)
+admin.site.register(UserJokeRead)
