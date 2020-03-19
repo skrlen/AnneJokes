@@ -10,30 +10,31 @@ from AnneJokes.models.user_joke import UserJokes
 class JokeInfoCount(View):
 
     def get(self, request):
-        joke_id = int(request.GET['joke_id'])
-        fabulous = JokeInfo.objects.filter(Q(joke_id=joke_id), Q(joke_type=1))
-        setp_on = JokeInfo.objects.filter(Q(joke_id=joke_id) & Q(joke_type=2))
-
-        comment = JokeComment.objects.filter(joke_id=joke_id)
-
-        if "user_id" in request.session._session:
-            user = User.objects.filter(pk=int(request.session._session['user_id']))[0]
-            fabulous_already = JokeInfo.objects.filter(Q(joke_id=joke_id), Q(joke_type=1), Q(user=user))
-            setp_on_already = JokeInfo.objects.filter(Q(joke_id=joke_id) & Q(joke_type=2), Q(user=user))
-            fa_state = 0
-            sea_state = 0
-            if len(fabulous_already) > 0:
-                fa_state = 1
-            if len(setp_on_already) > 0:
-                sea_state = 1
+        if 'joke_id' in request.GET:
+            joke_id = int(request.GET['joke_id'])
+            fabulous = JokeInfo.objects.filter(Q(joke_id=joke_id), Q(joke_type=1))
+            setp_on = JokeInfo.objects.filter(Q(joke_id=joke_id) & Q(joke_type=2))
 
             comment = JokeComment.objects.filter(joke_id=joke_id)
-            if fa_state == sea_state == 0:
-                return HttpResponse('%s,%s,%s' % (len(fabulous), len(setp_on), len(comment)))
-            return HttpResponse('%s,%s,%s,%s,%s' % (len(fabulous), fa_state, len(setp_on), sea_state, len(comment)))
 
-        return HttpResponse('%s,%s,%s' % (len(fabulous), len(setp_on), len(comment)))
+            if "user_id" in request.session._session:
+                user = User.objects.filter(pk=int(request.session._session['user_id']))[0]
+                fabulous_already = JokeInfo.objects.filter(Q(joke_id=joke_id), Q(joke_type=1), Q(user=user))
+                setp_on_already = JokeInfo.objects.filter(Q(joke_id=joke_id) & Q(joke_type=2), Q(user=user))
+                fa_state = 0
+                sea_state = 0
+                if len(fabulous_already) > 0:
+                    fa_state = 1
+                if len(setp_on_already) > 0:
+                    sea_state = 1
 
+                comment = JokeComment.objects.filter(joke_id=joke_id)
+                if fa_state == sea_state == 0:
+                    return HttpResponse('%s,%s,%s' % (len(fabulous), len(setp_on), len(comment)))
+                return HttpResponse('%s,%s,%s,%s,%s' % (len(fabulous), fa_state, len(setp_on), sea_state, len(comment)))
+
+            return HttpResponse('%s,%s,%s' % (len(fabulous), len(setp_on), len(comment)))
+        return HttpResponse('不要乱看，超过三次送永久封禁大礼包一个')
     def post(self, request):
         joke = UserJokes.objects.filter(pk=int(request.POST['joke_id']))[0]
         data_type = int(request.POST['data_type'])

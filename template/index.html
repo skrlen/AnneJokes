@@ -422,6 +422,8 @@
                               <a href="javascript:" id="register-login">已有账号？点此登陆。</a>
                               <script>
                                   $("#register-login").click(function () {
+                                      var $btn2 = $(this).button('登陆中..');
+                                        $btn2.button('reset');
                                       $("#hidden-register").click();
                                       $("#LoginRegister").click();
                                   })
@@ -435,6 +437,8 @@
 
                   <script>
                         $('#register-commit').click(function () {
+                            var $btn1 = $(this).button('注册中..');
+                            $btn1.button('reset');
                             $("#register-submit").click()
                             });
 
@@ -461,7 +465,7 @@
 
                 <div class="thumbnail">
                     <div class="user_img">
-                      <img src="/static/media/{{ joke.user.user_head_image }}" class="img-circle" style="width: 30px" alt="...">
+                      <img src="/static/media/{{ joke.user.user_head_image }}" class="img-circle" style="width: 30px;" alt="...">
                         <a href="#">{{ joke }}</a>{# ----点击用户----- #}
                     </div>
                   <div class="caption">
@@ -469,12 +473,124 @@
                       <br><br>
                           <img src="/static/media/{{ joke.joke_image }}" class="big-image" style="width: 300px; display: table; margin: 0 auto" alt="加载失败">
                     {% if username %}
-                    <p><br><a href="javascript:" class="btn btn-primary" id="fabulous{{ joke.id }}" role="button">点赞(999+)</a> <a href="javascript:" id="comment{{ joke.id }}" class="btn btn-default" role="button">评论(999+)</a> <a href="javascript:" id="setpon{{ joke.id }}" class="btn btn-danger" role="button">鄙视(999+)</a></p>
+{#                    <p><br><button href="javascript:" class="btn btn-primary" id="fabulous{{ joke.id }}" role="button">点赞(999+)</button> <a href="javascript:" id="comment{{ joke.id }}" data-toggle="modal" data-target="#commentModel{{ joke.id }}" class="btn btn-default" role="button">评论(999+)</a> <a href="javascript:" id="setpon{{ joke.id }}" class="btn btn-danger" role="button">鄙视(999+)</a></p>#}
+                    <p><br><button href="javascript:" class="btn btn-primary" id="fabulous{{ joke.id }}" role="button">点赞(999+)</button> <a href="javascript:" id="comment{{ joke.id }}" data-toggle="collapse" data-target="#collapseExample{{ joke.id }}" class="btn btn-default" role="button">评论(999+)</a> <a href="javascript:" id="setpon{{ joke.id }}" class="btn btn-danger" role="button">鄙视(999+)</a></p>
                       {% else %}
-                    <p><br><a href="javascript:" class="btn btn-primary disabled" title="登陆畅想更多特权" disabled id="fabulous{{ joke.id }}" role="button">点赞(999+)</a> <a href="javascript:" id="comment{{ joke.id }}" class="btn btn-default" role="button">评论(999+)</a> <a href="javascript:" id="setpon{{ joke.id }}" class="btn btn-danger disabled" title="登陆畅想更多特权" disabled role="button">鄙视(999+)</a></p>
+                    <p><br><button href="javascript:" class="btn btn-primary disabled" title="登陆畅想更多特权" disabled id="fabulous{{ joke.id }}" role="button">点赞(999+)</button> <a href="javascript:" id="comment{{ joke.id }}" data-toggle="modal" data-target="#commentModel{{ joke.id }}" class="btn btn-default" role="button">评论(999+)</a> <a href="javascript:" id="setpon{{ joke.id }}" class="btn btn-danger disabled" title="登陆畅想更多特权" disabled role="button">鄙视(999+)</a></p>
                       {% endif %}
+                      <script>
+                          $("#comment{{ joke.id }}").click(function () {
+                              let qw =$("#comment-all{{ joke.id }}").hasClass('isComment{{ joke.id }}');
+                              if (qw === true){
+                                  $("#comment-all{{ joke.id }}").removeClass('isComment{{ joke.id }}');
+                                  $.ajax({
+                                  url: '/comment/',
+                                  type: "get",
+                                  data: {
+                                      "joke_id": {{ joke.id }}
+                                  },
+                                  success: function (e) {
+                                      if (e==='{}'){
+                                        let elementq = '<p id="content-detailx" style="text-align: center" >哎呀呀，暂时没有人评论哦！快来抢沙发吧。</p>'
+                                        $("#comment-all{{ joke.id }}").append(elementq)
+                                      }else {
+                                          let q = $.parseJSON(e);
+                                          for (let key in q){
+                                              let element = '<div class="form-group" id="comment-all{{ joke.id }}">\n' +
+                                                  '<label for="recipient-name" class="control-label" id="comment_user{{ joke.id }}"><img src="/static'+q[key][2]+'" class="img-circle" style="width: 30px" alt="user_headImg{{ joke.id }}"><a\n' +
+                                                  'href="#" style="margin-left: 15px">'+q[key][0]+'：</a></label>\n' +
+                                                  '<p id="content-detail{{ joke.id }}">'+q[key][1]+'</p>\n' +
+                                                  '</div>';
+                                              $("#comment-all{{ joke.id }}").append(element)
+                                          }
+                                      }
+
+                                  }
+
+                              })
+
+
+                              }else {
+
+                              }
+                          })
+                      </script>
+                                <div class="collapse" id="collapseExample{{ joke.id }}">
+                                  <div class="well isComment{{ joke.id }}" id="comment-all{{ joke.id }}" style="max-height: 400px;overflow: auto;">
+                                    {# 评论内容 #}
+
+                                  </div>
+                                    <div>{% if username %}
+                                        <form action="/comment/" method="post">
+                                            {% csrf_token %}
+                                              <input type="text" hidden name="joke_id" id="jokeid{{ joke.id }}" value="{{ joke.id }}">
+                                              <input type="text" name="comment" id="comment-c{{ joke.id }}" style="width: 75%;border-radius: 5px;border: 1px solid #e3e3e3; height: 30px" required>
+{#                                            <input type="submit" id="commit{{ joke.id }}" hidden>#}
+                                              <button type="button" id="comment-commit{{ joke.id }}" autocomplete="off" class="btn btn-primary" data-loading-text="loading..">评论</button>
+                                            <script>
+                                                $("#comment-commit{{ joke.id }}").click(function () {
+                                                    {#$("#commit{{ joke.id }}").click();#}
+
+                                                    var $btn = $(this).button('loading');
+                                                    addComment($("#jokeid{{ joke.id }}").val(), $("#comment-c{{ joke.id }}").val());
+                                                    $("#comment-c{{ joke.id }}").val("");
+                                                    $btn.button('reset');
+                                                })
+                                            </script>
+                                          </form>
+                                          {% else %}
+                                            <form action="/comment/" method="post">
+                                              <input type="text" style="width: 75%;border-radius: 5px;border: 1px solid #e3e3e3; height: 30px">
+                                              <button type="button" disabled="disabled" id="comment-commit{{ joke.id }}" class="btn btn-primary">评论</button>
+                                            </form>
+                                          {% endif %}
+                                    </div>
+                                </div>
+
+{#弹窗式评论#}
+{#                                <div class="modal fade" id="commentModel{{ joke.id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="margin-top: 200px; max-height: 400px; overflow: auto;">#}
+{#                                  <div class="modal-dialog" role="document">#}
+{#                                    <div class="modal-content">#}
+{#                                      <div class="modal-header">#}
+{#                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span id="hidden-login" aria-hidden="true">&times;</span></button>#}
+{#                                        <h4 class="modal-title" style="position: absolute" id="exampleModalLabel">自古评论出大神</h4>#}
+{#                                      </div>#}
+{#                                      <div class="modal-body" id="comment_detail{{ joke.id }}">#}
+{#                                          <div class="form-group" id="comment-all{{ joke.id }}">#}
+{#                                            <label for="recipient-name" class="control-label" id="comment_user{{ joke.id }}"><a#}
+{#                                                    href="#">用户123231：</a></label>#}
+{#                                            <input type="email" name="email" class="form-control" id="recipient-name" required>#}
+{#                                              <p id="content-detailx">哎呀呀，暂时没有人评论哦！快来抢沙发吧。</p>#}
+{#                                          </div>#}
+{##}
+{##}
+{##}
+{#                                          <p id="login-message" style="color: red;"></p>#}
+{#                                      </div>#}
+{#                                        {% if username %}#}
+{#                                      <div class="modal-footer">#}
+{#                                          <form action="/comment/" method="post">#}
+{#                                            {% csrf_token %}#}
+{#                                              <input type="text" hidden value="{{ joke.id }}">#}
+{#                                              <input type="text" style="width: 75%;border-radius: 5px;border: 1px solid #e3e3e3; height: 30px">#}
+{#                                              <button type="button" id="comment-commit{{ joke.id }}" class="btn btn-primary">评论</button>#}
+{#                                          </form>#}
+{#                                          {% else %}#}
+{#                                            <form action="/comment/" method="post">#}
+{#                                              <input type="text" style="width: 75%;border-radius: 5px;border: 1px solid #e3e3e3; height: 30px">#}
+{#                                              <button type="button" disabled="false" id="comment-commit{{ joke.id }}" class="btn btn-primary">评论</button>#}
+{#                                            </form>#}
+{#                                          {% endif %}#}
+{#                                      </div>#}
+{#                                    </div>#}
+{#                                  </div>#}
+{#                                </div>#}
+
                   </div>
                 </div>
+
+
+{#--------------------comment-end--------------------------------------------#}
 
                   <script>
                         $(function () {
@@ -708,6 +824,39 @@
             imgShow("#outerdiv", "#innerdiv", "#bigimg", _this);
         });
     });
+
+     function sleep(milliSeconds) {
+        var startTime = new Date().getTime();
+        while (new Date().getTime() < startTime + milliSeconds) {
+            console.log(new Date().getTime());
+        }//暂停一段时间 1000=1S。
+    }
+
+    function addComment(joke_id, comment) {
+        $.ajax({
+            url: '/comment/',
+            type: 'post',
+            data: {
+                "joke_id": joke_id,
+                "comment": comment,
+                "csrfmiddlewaretoken": $('input[name="csrfmiddlewaretoken"]').val()
+            },
+            success: function (e) {
+                let comment_js = $.parseJSON(e);
+                for (let qw in comment_js){
+                    {#console.log(comment_js[qw][0], comment_js[qw][1], comment_js[qw][2]);#}
+                    let self_element = '<div class="form-group" id="comment-all'+joke_id+'">\n' +
+                                                  '<label for="recipient-name" class="control-label" id="comment_user'+joke_id+'"><img src="/static'+comment_js[qw][2]+'" class="img-circle" style="width: 30px" alt="user_headImg'+joke_id+'"><a\n' +
+                                                  'href="#" style="margin-left: 15px">'+comment_js[qw][0]+'：</a></label>\n' +
+                                                  '<p id="content-detail'+joke_id+'">'+comment_js[qw][1]+'</p>\n' +
+                                                  '</div>';
+                {#console.log(self_element);#}
+                $("#comment-all"+joke_id).append(self_element)
+                }
+
+            }
+            })
+    }
 
     function imgShow(outerdiv, innerdiv, bigimg, _this){
         var src = _this.attr("src");//获取当前点击的pimg元素中的src属性
