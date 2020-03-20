@@ -2,8 +2,9 @@
 from AnneJokes.models.user import User
 from AnneJokes.models.user_joke import UserJokes
 from django.http.response import HttpResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from django.views import View
+from AnneJokes.script.collect import collect
 
 
 class UploadJokes(View):
@@ -30,6 +31,7 @@ class UploadJokes(View):
                                                 joke_states=1
                                                 )
                 joke.save()
+                collect()
                 users = dict()
                 users['username'] = user[0].nickname
                 users['user_level'] = user[0].user_level

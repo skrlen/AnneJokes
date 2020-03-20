@@ -6,6 +6,7 @@ from django.http.response import HttpResponse
 from AnneJokes.method.hashlib_md5 import str_md5
 from AnneJokes.method.email import send_html_mail
 from AnneJokes.method.email import send_mails
+from AnneJokes.script.collect import collect
 
 
 class Register(View):
@@ -36,6 +37,8 @@ class Register(View):
                 password_md5 = str_md5(password)
                 user = User.objects.create(email=email, password=password_md5, nickname=nickname, user_head_image=headimage, user_state=True)
                 user.save()
+                collect()
+                request.session['user_id'] = user.id
                 # activate_str = str_md5(email)
                 # title = "AnneJoke<skrlen@126.com>"
                 # content = '我们为了确定是您本人在操作，请验证您的身份<a href="http://121.36.249.255/activate/?data=%s&id=%s">点击激活</a>，如果您未订阅，此信息请忽略' % (activate_str, user.id)

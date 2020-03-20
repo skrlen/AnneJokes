@@ -7,10 +7,17 @@
 <body>
 {% block container %}
     <div class="jumbotron">
+        <script>
+            function fui() {
+                window.location.href='/index/'
+            }
+            setTimeout(fui, 2000)
+        </script>
     <div class="container">
         <h3>尊敬的用户您好！</h3>
         {% if message %}
         <p>{{ message }}</p>
+            <p>正在为你跳转至首页！</p>
             {% else %}
             <p>404 NOT FOUND</p>
         {% endif %}
