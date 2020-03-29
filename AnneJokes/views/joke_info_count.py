@@ -5,6 +5,7 @@ from django.db.models import Q
 from AnneJokes.models.joke_comment import JokeComment
 from AnneJokes.models.user import User
 from AnneJokes.models.user_joke import UserJokes
+from AnneJokes.models.comment2comment import Comment2Comment
 
 
 class JokeInfoCount(View):
@@ -29,12 +30,15 @@ class JokeInfoCount(View):
                     sea_state = 1
 
                 comment = JokeComment.objects.filter(joke_id=joke_id)
+                com2com = Comment2Comment.objects.filter(joke_comment_id__in=[i.id for i in comment])
+                comment = len(comment) + len(com2com)
                 if fa_state == sea_state == 0:
-                    return HttpResponse('%s,%s,%s' % (len(fabulous), len(setp_on), len(comment)))
-                return HttpResponse('%s,%s,%s,%s,%s' % (len(fabulous), fa_state, len(setp_on), sea_state, len(comment)))
+                    return HttpResponse('%s,%s,%s' % (len(fabulous), len(setp_on), comment))
+                return HttpResponse('%s,%s,%s,%s,%s' % (len(fabulous), fa_state, len(setp_on), sea_state, comment))
 
             return HttpResponse('%s,%s,%s' % (len(fabulous), len(setp_on), len(comment)))
         return HttpResponse('不要乱看，超过三次送永久封禁大礼包一个')
+
     def post(self, request):
         joke = UserJokes.objects.filter(pk=int(request.POST['joke_id']))[0]
         data_type = int(request.POST['data_type'])

@@ -15,8 +15,9 @@ class UploadJokes(View):
                 users = dict()
                 users['username'] = user[0].nickname
                 users['user_level'] = user[0].user_level
-                head_image = user[0].user_head_image.name
-                users['head_image'] = head_image
+                head_image = user[0]
+                users['head_image'] = head_image.user_head_image
+                users['thumb_img'] = head_image.user_thumb_head_image
                 return render(request, 'upload_joke.html', users)
             return render(request, 'upload_joke.html')
         return render(request, 'upload_joke.html')
@@ -35,8 +36,9 @@ class UploadJokes(View):
                 users = dict()
                 users['username'] = user[0].nickname
                 users['user_level'] = user[0].user_level
-                head_image = user[0].user_head_image.name
-                users['head_image'] = head_image
+                head_image = user[0]
+                users['head_image'] = head_image.user_head_image
+                users['thumb_img'] = head_image.user_thumb_head_image
                 users['title'] = "投稿成功"
                 users['message'] = "上传成功，请静待审核！"
                 return render(request, 'base.html', users)

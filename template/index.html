@@ -36,7 +36,7 @@
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
               <ul class="nav navbar-nav">
                 <li class="active"><a href="/index/">首页<span class="sr-only">(current)</span></a></li>
-                <li><a href="#">视频</a></li>
+                <li><a href="#">新闻</a></li>
     {#            <li class="dropdown">#}
     {#              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>#}
     {#              <ul class="dropdown-menu">#}
@@ -60,8 +60,10 @@
               {% if username %}
                   <ul class="nav navbar-nav navbar-right">
                       <li><a class="navbar-brand" href="#">
-                          <p>{{ user_head_image }}</p>
-                            <img alt="Brand" class="img-circle" style="width: 30px; margin-top: -20px" src="/static/media/{{ head_image }}">
+{#                          <p>{{ user_head_image }}</p>#}
+{#                            <img alt="Brand" class="img-circle" style="width: 30px; margin-top: -20px" src="/static/media/{{ head_image }}">#}
+                            <img alt="Brand" class="img-circle" style="width: 30px; margin-top: -13px" src="/static/media/{{ thumb_img }}">
+
                         </a></li>
                     <li role="presentation"><a href="#">我的消息 <span class="badge" style="background-color: red">3</span></a></li>
                     <li class="dropdown">
@@ -465,7 +467,11 @@
 
                 <div class="thumbnail">
                     <div class="user_img">
+                        {% if joke.user.user_thumb_head_image.name %}
+                            <img src="/static/media/{{ joke.user.user_thumb_head_image }}" class="img-circle" style="width: 30px;" alt="...">
+                        {% else %}
                       <img src="/static/media/{{ joke.user.user_head_image }}" class="img-circle" style="width: 30px;" alt="...">
+                        {% endif %}
                         <a href="#">{{ joke }}</a>{# ----点击用户----- #}
                     </div>
                   <div class="caption">
@@ -476,8 +482,16 @@
 {#                    <p><br><button href="javascript:" class="btn btn-primary" id="fabulous{{ joke.id }}" role="button">点赞(999+)</button> <a href="javascript:" id="comment{{ joke.id }}" data-toggle="modal" data-target="#commentModel{{ joke.id }}" class="btn btn-default" role="button">评论(999+)</a> <a href="javascript:" id="setpon{{ joke.id }}" class="btn btn-danger" role="button">鄙视(999+)</a></p>#}
                     <p><br><button href="javascript:" class="btn btn-primary" id="fabulous{{ joke.id }}" role="button">点赞(999+)</button> <a href="javascript:" id="comment{{ joke.id }}" data-toggle="collapse" data-target="#collapseExample{{ joke.id }}" class="btn btn-default" role="button">评论(999+)</a> <a href="javascript:" id="setpon{{ joke.id }}" class="btn btn-danger" role="button">鄙视(999+)</a></p>
                       {% else %}
-                    <p><br><button href="javascript:" class="btn btn-primary disabled" title="登陆畅想更多特权" disabled id="fabulous{{ joke.id }}" role="button">点赞(999+)</button> <a href="javascript:" id="comment{{ joke.id }}" data-toggle="modal" data-target="#commentModel{{ joke.id }}" class="btn btn-default" role="button">评论(999+)</a> <a href="javascript:" id="setpon{{ joke.id }}" class="btn btn-danger disabled" title="登陆畅想更多特权" disabled role="button">鄙视(999+)</a></p>
+                    <p><br><button href="javascript:" class="btn btn-primary disabled" title="登陆畅想更多特权" disabled id="fabulous{{ joke.id }}" role="button">点赞(999+)</button> <a href="javascript:" id="comment{{ joke.id }}" data-toggle="collapse" data-target="#collapseExample{{ joke.id }}" class="btn btn-default" role="button">评论(999+)</a> <a href="javascript:" id="setpon{{ joke.id }}" class="btn btn-danger disabled" title="登陆畅想更多特权" disabled role="button">鄙视(999+)</a></p>
                       {% endif %}
+                    <script>
+                          $("#comment2comm").click(function () {
+                              $("#comment2{{ joke.id }}").attr('hidden', 'hidden');
+                              $("#comment2comment{{ joke.id }}").removeAttr('hidden');
+                              $("#comment2-c{{ joke.id }}").attr('placeholder', '回复：');
+                              $("#commentid{{ joke.id }}").attr('value', '回复：');
+                          })
+                      </script>
                       <script>
                           $("#comment{{ joke.id }}").click(function () {
                               let qw =$("#comment-all{{ joke.id }}").hasClass('isComment{{ joke.id }}');
@@ -496,11 +510,25 @@
                                       }else {
                                           let q = $.parseJSON(e);
                                           for (let key in q){
-                                              let element = '<div class="form-group" id="comment-all{{ joke.id }}">\n' +
+                                              let btitle = '';
+                                              for (let c2c=0; c2c<q[key][3].length; c2c++){
+                                                  {#console.log(q[key][3][c2c]);#}
+                                                  btitle += '<label for="recipient-name" style="margin-left:50px" class="control-label" id="comment_user{{ joke.id }}"><img src="/static'+q[key][3][c2c][2]+'" class="img-circle" style="width: 30px" alt="user_headImg{{ joke.id }}"><a\n' +
+                                                  'href="#" style="margin-left: 15px">'+q[key][3][c2c][0]+'：</a></label>\n' +
+                                                  '<p style="margin-left: 100px" id="content-detail{{ joke.id }}">'+q[key][3][c2c][1]+'</p>\n'
+                                              }
+                                              let element = '<div class="form-group comment-box'+key+'" id="comment-all{{ joke.id }}">\n' +
                                                   '<label for="recipient-name" class="control-label" id="comment_user{{ joke.id }}"><img src="/static'+q[key][2]+'" class="img-circle" style="width: 30px" alt="user_headImg{{ joke.id }}"><a\n' +
-                                                  'href="#" style="margin-left: 15px">'+q[key][0]+'：</a></label>\n' +
-                                                  '<p id="content-detail{{ joke.id }}">'+q[key][1]+'</p>\n' +
-                                                  '</div>';
+                                                  'href="#" style="margin-left: 15px">'+q[key][0]+'：</a"><a id="comment2comm'+key+'" style="font-size: 5px;">回复</a></label>\n' +
+                                                  '<p style="margin-left: 40px" id="content-detail{{ joke.id }}">'+q[key][1]+'</p>\n' +btitle+
+                                                  '</div>'+'<script>\n' +
+                                                  '$("#comment2comm'+key+'").click(function () {\n' +
+                                                  '$("#comment2{{ joke.id }}").attr(\'hidden\', \'hidden\');\n' +
+                                                  '$("#comment2comment{{ joke.id }}").removeAttr(\'hidden\');\n' +
+                                                  '$("#comment2-c{{ joke.id }}").attr(\'placeholder\', \'回复：'+q[key][0]+'\');\n'+
+                                                  '$("#commentid{{ joke.id }}").attr(\'value\', \''+key+'\');\n' +
+                                                  '})\n' +
+                                                  '<\/script>';
                                               $("#comment-all{{ joke.id }}").append(element)
                                           }
                                       }
@@ -521,12 +549,15 @@
 
                                   </div>
                                     <div>{% if username %}
-                                        <form action="/comment/" method="post">
+                                        <form action="/comment/" id="comment2{{ joke.id }}" method="post">
                                             {% csrf_token %}
                                               <input type="text" hidden name="joke_id" id="jokeid{{ joke.id }}" value="{{ joke.id }}">
                                               <input type="text" name="comment" id="comment-c{{ joke.id }}" style="width: 75%;border-radius: 5px;border: 1px solid #e3e3e3; height: 30px" required>
 {#                                            <input type="submit" id="commit{{ joke.id }}" hidden>#}
+                                            {% if username %}
                                               <button type="button" id="comment-commit{{ joke.id }}" autocomplete="off" class="btn btn-primary" data-loading-text="loading..">评论</button>
+                                            {% else %}
+                                            {% endif %}
                                             <script>
                                                 $("#comment-commit{{ joke.id }}").click(function () {
                                                     {#$("#commit{{ joke.id }}").click();#}
@@ -538,8 +569,38 @@
                                                 })
                                             </script>
                                           </form>
+
+                                        <form action="/comment/" hidden id="comment2comment{{ joke.id }}" method="post">
+                                            {% csrf_token %}
+                                              <input type="text" hidden name="comment_id{{ joke.id }}" id="commentid{{ joke.id }}">
+                                              <input type="text" name="comment" placeholder="回复：xxx" id="comment2-c{{ joke.id }}" style="width: 75%;border-radius: 5px;border: 1px solid #e3e3e3; height: 30px" required>
+                                            {% if username %}
+                                              <button type="button" id="comment2-commit{{ joke.id }}" autocomplete="off" class="btn btn-primary" data-loading-text="loading..">回复</button>
+                                              <button type="button" id="comment2-cancel{{ joke.id }}" autocomplete="off" class="btn btn-default" data-loading-text="loading..">取消</button>
+                                            {% else %}
+                                            {% endif %}
+                                            <script>
+                                                $("#comment2-cancel{{ joke.id }}").click(function () {
+                                                    $("#comment2comment{{ joke.id }}").attr('hidden', 'hidden');
+                                                    $("#comment2{{ joke.id }}").removeAttr('hidden');
+                                                });
+                                            </script>
+                                            <script>
+                                                $("#comment2-commit{{ joke.id }}").click(function () {
+                                                    {#$("#commit{{ joke.id }}").click();#}
+
+                                                    var $btn = $(this).button('loading');
+                                                    addComment2Comment($("#jokeid{{ joke.id }}").val(), $('#commentid{{ joke.id }}').val() ,$("#comment2-c{{ joke.id }}").val());
+                                                    $("#comment2-c{{ joke.id }}").val("");
+                                                    $("#comment2comment{{ joke.id }}").attr('hidden', 'hidden');
+                                                    $("#comment2{{ joke.id }}").removeAttr('hidden');
+                                                    $btn.button('reset');
+                                                })
+                                            </script>
+                                          </form>
+
                                           {% else %}
-                                            <form action="/comment/" method="post">
+                                            <form action="/comment/">
                                               <input type="text" style="width: 75%;border-radius: 5px;border: 1px solid #e3e3e3; height: 30px">
                                               <button type="button" disabled="disabled" id="comment-commit{{ joke.id }}" class="btn btn-primary">评论</button>
                                             </form>
@@ -676,15 +737,6 @@
                             }
                                 {#$("#fabulous{{ joke.id }}").unbind("click");#}
                         });
-
-                        {#let str1 = $("#fabulous{{ joke.id }}").text();#}
-                        {#let str2 = $("#setpon{{ joke.id }}").text();#}
-                        {#console.log(str1, str2);#}
-                        {#if (str1.slice(0,3) === "赞过了"){#}
-                        {#    $("#setpon{{ joke.id }}").click(cancel_fabulous_setpon({{ joke.id }}, 1, info[0]))}#}
-                        {##}
-                        {#if (str2.slice(0,3) === "踩过了"){#}
-                        {#    $("#setpon{{ joke.id }}").click(cancel_fabulous_setpon({{ joke.id }}, 2, info[2]))}#}
 
 
                   </script>
@@ -832,6 +884,28 @@
         }//暂停一段时间 1000=1S。
     }
 
+    function addComment2Comment(joke_id, comment_id, comment) {
+        $.ajax({
+            url: '/comment/',
+            type: 'post',
+            data: {
+                "comment_id": comment_id,
+                "joke_id": joke_id,
+                "comment": comment,
+                "csrfmiddlewaretoken": $('input[name="csrfmiddlewaretoken"]').val()
+            },
+            success: function (e) {
+                let comment_json = $.parseJSON(e);
+                for (let num in comment_json){
+                    let self_element = '<label for="recipient-name" style="margin-left:50px" class="control-label" id="comment_user'+joke_id+'"><img src="/static'+comment_json[num][2]+'" class="img-circle" style="width: 30px" alt="user_headImg'+joke_id+'"><a\n' +
+                                                  'href="#" style="margin-left: 15px">'+comment_json[num][0]+'：</a></label>\n' +
+                                                  '<p style="margin-left: 100px" id="content-detail'+joke_id+'">'+comment_json[num][1]+'</p>\n';
+                    $(".comment-box"+comment_id).append(self_element)
+                }
+            }
+        })
+    }
+
     function addComment(joke_id, comment) {
         $.ajax({
             url: '/comment/',
@@ -844,14 +918,19 @@
             success: function (e) {
                 let comment_js = $.parseJSON(e);
                 for (let qw in comment_js){
-                    {#console.log(comment_js[qw][0], comment_js[qw][1], comment_js[qw][2]);#}
-                    let self_element = '<div class="form-group" id="comment-all'+joke_id+'">\n' +
+                    let self_element = '<div class="form-group comment-box'+qw+'" id="comment-all'+joke_id+'">\n' +
                                                   '<label for="recipient-name" class="control-label" id="comment_user'+joke_id+'"><img src="/static'+comment_js[qw][2]+'" class="img-circle" style="width: 30px" alt="user_headImg'+joke_id+'"><a\n' +
-                                                  'href="#" style="margin-left: 15px">'+comment_js[qw][0]+'：</a></label>\n' +
-                                                  '<p id="content-detail'+joke_id+'">'+comment_js[qw][1]+'</p>\n' +
-                                                  '</div>';
-                {#console.log(self_element);#}
-                $("#comment-all"+joke_id).append(self_element)
+                                                  'href="#" style="margin-left: 15px">'+comment_js[qw][0]+'：</a><a id="comment2comm'+qw+'" style="font-size: 5px;">回复</a></label>\n' +
+                                                  '<p style="margin-left: 40px" id="content-detail'+joke_id+'">'+comment_js[qw][1]+'</p>\n' +
+                                                  '</div>'+'<script>\n' +
+                                                  '$("#comment2comm'+qw+'").click(function () {\n' +
+                                                  '$("#comment2'+joke_id+'").attr(\'hidden\', \'hidden\');\n' +
+                                                  '$("#comment2comment'+joke_id+'").removeAttr(\'hidden\');\n' +
+                                                  '$("#comment2-c'+joke_id+'").attr(\'placeholder\', \'回复：'+comment_js[qw][0]+'\');\n'+
+                                                  '$("#commentid'+joke_id+'").attr(\'value\', \''+qw+'\');\n' +
+                                                  '})\n' +
+                                                  '<\/script>';
+                $("#comment-all"+joke_id).append(self_element);
                 }
 
             }

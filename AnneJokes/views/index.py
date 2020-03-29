@@ -15,6 +15,10 @@ class Index(View):
             date = dict()
             date['username'] = user.nickname
             date['head_image'] = user.user_head_image.name
+            if user.user_thumb_head_image.name:
+                date['thumb_img'] = user.user_thumb_head_image.name
+            else:
+                date['thumb_img'] = user.user_head_image.name
             date['user_level'] = user.user_level
             page, plist, index = pager(index, user=user)
             date['joke_page'] = page

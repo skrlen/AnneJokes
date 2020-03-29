@@ -10,5 +10,5 @@ def collect():
     os.system('cd AnneJokes')
     time.sleep(0.5)
     os.system('python3 manage.py collectstatic')
-    time.sleep(0.5)
+    time.sleep(1)
     os.system('yes')
