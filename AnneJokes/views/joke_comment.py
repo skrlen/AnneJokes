@@ -32,7 +32,7 @@ class Comments(View):
         # 添加新的评论
         if "user_id" in request.session._session:
             user_id = request.session._session['user_id']
-            # 评论评论的评论， 暂时搁浅， 等待后边完善时做
+            # TODO 评论评论的评论， 暂时搁浅， 等待后边完善时做
             # if 'comment2_ids' in request.POST:
             #     comment_self_id = request.POST['comment2_ids']
             #     comment = request.POST['comment']
@@ -79,7 +79,7 @@ class Comments(View):
         return HttpResponse("未授权")
 
     def delete(self, request):
-        # 删除自己的评论
+        # TODO 删除自己的评论
         pass
 
 
