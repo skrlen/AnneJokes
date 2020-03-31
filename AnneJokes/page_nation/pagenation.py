@@ -2,6 +2,8 @@
 from django.core.paginator import Paginator
 from AnneJokes.models.user_joke import UserJokes
 from AnneJokes.models.user_joke_read import UserJokeRead
+from AnneJokes.models.user import User
+from django.db.models.query import Q
 
 
 def pager(index: int, user: object = None, count: int = 10):
@@ -37,3 +39,13 @@ def pager(index: int, user: object = None, count: int = 10):
         pages = p.page(index)
         p_list = p.page_range
         return pages, p_list, index
+
+
+def pager_user_info(index: int, user: object, count: 10):
+
+    user_joke = UserJokes.objects.filter(user=user)
+    if user_joke:
+        p = Paginator(user_joke.order_by('-create_at'), count)
+        page = p.page(index)
+        p_list = p.page_range
+        return page, p_list, index

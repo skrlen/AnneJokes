@@ -1,0 +1,37 @@
+{% extends 'index.html' %}
+<html lang="zh">
+{% load static from staticfiles %}
+{% block title %}
+    {{ title }}
+{% endblock title %}
+<body>
+{% block container %}
+    <div class="container">
+    <p style="text-align: center">康康我发布了什么.</p>
+    {% for i in pages %}
+             <div class="thumbnail" >
+            <div class="user_img">
+                    {% if i.user.user_thumb_head_image %}
+                        <img src="/static/media/{{ i.user.user_thumb_head_image.name }}" class="img-circle" style="width: 30px;" alt="...">
+                    {% else %}
+                  <img src="/static/media/{{ i.user.user_head_image.name }}" class="img-circle" style="width: 30px;" alt="...">
+                    {% endif %}
+                    <a href="/info/?user_id={{ i.user.id }}">{{ i }}</a>{# ----点击用户----- #}
+                </div>
+              <div class="caption">
+                  <p>{{ i.joke_content }}</p>
+                  <br><br>
+                      <img src="/static/media/{{ i.joke_image }}" class="big-image" style="width: 300px; display: table; margin: 0 auto" alt="加载失败">
+            </div>
+                </div>
+        {% empty %}
+            <p style="text-align: center">你知道吗？许多的未知尚待探索</p>
+            <br>
+            <br>
+        {% endfor %}
+    </div>
+{% endblock container %}
+{% block page %}
+{% endblock page %}
+</body>
+</html>

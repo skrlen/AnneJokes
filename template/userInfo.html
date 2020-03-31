@@ -10,15 +10,23 @@
     <div class="jumbotron" style="background-color: {{ color }}">
     <div class="container">
         <div align="center">
-            <img class="img-circle big-image" style="height: 200px" src="/static{{ head_image }}" alt="please wait">
-            <p id="username">{{ username }}</p>
+            <img class="img-circle big-image" style="height: 200px" src="/static{{ user_head_image }}" alt="please wait">
+            <p id="username">{{ user_username }}<a style="font-size: 12px" id="start_modify">修改</a></p>
         </div>
+    {% if user_id %}
         <script>
             $("#username").dblclick(function () {
                 $("#modify").removeAttr('class');
-                $("#nomodify").addClass('hidden')
+                $("#nomodify").addClass('hidden');
+                $("#user_jokes").addClass('hidden')
+            });
+            $("#start_modify").click(function () {
+                $("#modify").removeAttr('class');
+                $("#nomodify").addClass('hidden');
+                $("#user_jokes").addClass('hidden')
             })
         </script>
+    {% endif %}
         <div style="margin-top: 50px" id="nomodify" >
             <div class="form-row" style="border-bottom: #e3e3e3 1px solid; margin-top: 30px">
                 <label for="contents" class="required" style="font-weight: bold; float: left; padding: 4px 10px 0 0; width: 160px; font-size: 24px">姓名:</label>
@@ -67,6 +75,7 @@
 
         <div style="margin-top: 50px" id="modify" class="hidden">
             <form action="/info/" method="post">
+            {% csrf_token %}
             <div class="form-row" style="border-bottom: #e3e3e3 1px solid; margin-top: 30px">
                 <label for="contents" class="required" style="font-weight: bold; float: left; padding: 4px 10px 0 0; width: 160px; font-size: 24px">姓名:</label>
                 {% if user_name != '' %}
@@ -206,6 +215,7 @@
                     $("#cancel").click(function () {
                         $("#modify").addClass('hidden');
                         $("#nomodify").removeAttr('class');
+                        $("#user_jokes").removeClass('hidden');
                     })
                 </script>
             </div>
@@ -213,8 +223,35 @@
 
             </form>
         </div>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
 
-    </div>
+        {% for i in pages %}
+             <div class="thumbnail" id="user_jokes" >
+            <div class="user_img">
+                    {% if i.user.user_thumb_head_image %}
+                        <img src="/static/media/{{ i.user.user_thumb_head_image.name }}" class="img-circle" style="width: 30px;" alt="...">
+                    {% else %}
+                  <img src="/static/media/{{ i.user.user_head_image.name }}" class="img-circle" style="width: 30px;" alt="...">
+                    {% endif %}
+                    <a href="/info/?user_id={{ i.user.id }}">{{ i }}</a>{# ----点击用户----- #}
+                </div>
+              <div class="caption">
+                  <p>{{ i.joke_content }}</p>
+                  <br><br>
+                      <img src="/static/media/{{ i.joke_image }}" class="big-image" style="width: 300px; display: table; margin: 0 auto" alt="加载失败">
+            </div>
+                </div>
+        {% empty %}
+            <p style="text-align: center">你知道吗？这个世界上有许多的未知等待探索</p>
+            <br>
+            <br>
+        {% endfor %}
+
+
     </div>
 {% endblock container %}
 {% block page %}
