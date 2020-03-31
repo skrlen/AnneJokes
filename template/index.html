@@ -69,7 +69,7 @@
                     <li class="dropdown">
                       <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ username }} <span class="caret"></span></a>
                       <ul class="dropdown-menu">
-                        <li><a href="#">我的资料</a></li>
+                        <li><a href="/info/">我的资料</a></li>
                         <li><a href="#">我的发布</a></li>
                         <li><a href="/upload/">发布文章</a></li>
                         <li role="separator" class="divider"></li>
@@ -472,7 +472,7 @@
                         {% else %}
                       <img src="/static/media/{{ joke.user.user_head_image }}" class="img-circle" style="width: 30px;" alt="...">
                         {% endif %}
-                        <a href="#">{{ joke }}</a>{# ----点击用户----- #}
+                        <a href="/info/?user_id={{ joke.user.id }}">{{ joke }}</a>{# ----点击用户----- #}
                     </div>
                   <div class="caption">
                       <p>{{ joke.joke_content }}</p>

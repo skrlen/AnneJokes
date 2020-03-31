@@ -9,6 +9,7 @@ from AnneJokes.views.register import Register
 from AnneJokes.views.user_activation import UserActive
 from AnneJokes.views.retrieve_password import RetrievePassword
 from AnneJokes.views.upload_joke import UploadJokes
+from AnneJokes.views.userinfo import ShowUserInfo
 
 
 urlpatterns = [
@@ -22,4 +23,5 @@ urlpatterns = [
     url(r'^activate/$', UserActive.as_view()),
     url(r'^retrieve/$', RetrievePassword.as_view()),
     url(r'^upload/$', UploadJokes.as_view()),
+    url(r'^info/$', ShowUserInfo.as_view()),
 ]

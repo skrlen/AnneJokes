@@ -1,0 +1,230 @@
+{% extends 'index.html' %}
+<html lang="zh">
+{% load static from staticfiles %}
+{% block title %}
+    {{ title }}--的个人信息
+{% endblock title %}
+<body>
+{% block container %}
+{#    <div class="jumbotron"  style="background-image: url('/static{{ background_image }}');background-repeat: no-repeat; background-size: 100% 100%; -moz-background-size: 100% 100%; ">#}
+    <div class="jumbotron" style="background-color: {{ color }}">
+    <div class="container">
+        <div align="center">
+            <img class="img-circle big-image" style="height: 200px" src="/static{{ head_image }}" alt="please wait">
+            <p id="username">{{ username }}</p>
+        </div>
+        <script>
+            $("#username").dblclick(function () {
+                $("#modify").removeAttr('class');
+                $("#nomodify").addClass('hidden')
+            })
+        </script>
+        <div style="margin-top: 50px" id="nomodify" >
+            <div class="form-row" style="border-bottom: #e3e3e3 1px solid; margin-top: 30px">
+                <label for="contents" class="required" style="font-weight: bold; float: left; padding: 4px 10px 0 0; width: 160px; font-size: 24px">姓名:</label>
+                {% if user_name != '' %}
+                <p>{{ user_name }}</p>
+                {% else %}
+                <p>未填写</p>
+                {% endif %}
+            </div>
+                <div class="form-row" style="border-bottom: #e3e3e3 1px solid; margin-top: 30px">
+                <label for="contents" class="required" style="font-weight: bold; float: left; padding: 4px 10px 0 0; width: 160px; font-size: 24px">签名:</label>
+                {% if user_autograph != '' %}
+                <p>{{ user_autograph }}</p>
+                {% else %}
+                <p>未填写</p>
+                {% endif %}
+            </div>
+            <div class="form-row" style="border-bottom: #e3e3e3 1px solid; margin-top: 30px">
+                <label for="contents" class="required" style="font-weight: bold; float: left; padding: 4px 10px 0 0; width: 160px; font-size: 24px">生日:</label>
+                {% if user_birthday != '' %}
+                <p>{{ user_birthday.year }}年{{ user_birthday.month }}月{{ user_birthday.day }}日</p>
+                {% else %}
+                <p>未填写</p>
+                {% endif %}
+            </div>
+            <div class="form-row" style="border-bottom: #e3e3e3 1px solid; margin-top: 30px">
+                <label for="contents" class="required" style="font-weight: bold; float: left; padding: 4px 10px 0 0; width: 160px; font-size: 24px">性别:</label>
+                {% if user_gender != '' %}
+                <p>{{ user_gender }}</p>
+                {% else %}
+                <p>未填写</p>
+                {% endif %}
+            </div>
+
+            <div class="form-row" style="border-bottom: #e3e3e3 1px solid; margin-top: 30px">
+                <label for="contents" class="required" style="font-weight: bold; float: left; padding: 4px 10px 0 0; width: 160px; font-size: 24px">地址:</label>
+                {% if user_address != '' %}
+                <p>{{ user_address }}</p>
+                {% else %}
+                <p>未填写</p>
+                {% endif %}
+            </div>
+
+        </div>
+
+
+        <div style="margin-top: 50px" id="modify" class="hidden">
+            <form action="/info/" method="post">
+            <div class="form-row" style="border-bottom: #e3e3e3 1px solid; margin-top: 30px">
+                <label for="contents" class="required" style="font-weight: bold; float: left; padding: 4px 10px 0 0; width: 160px; font-size: 24px">姓名:</label>
+                {% if user_name != '' %}
+                    <input type="text" name="user_name" style="height: 32px; border-radius: 5px; width: 300px" placeholder="{{ user_name }}" value="{{ user_name }}">
+                {% else %}
+                    <input type="text" name="user_name" style="height: 32px; border-radius: 5px; width: 300px" placeholder="这个名字可以是虚拟的">
+                {% endif %}
+            </div>
+                <div class="form-row" style="border-bottom: #e3e3e3 1px solid; margin-top: 30px">
+                <label for="contents" class="required" style="font-weight: bold; float: left; padding: 4px 10px 0 0; width: 160px; font-size: 24px">签名:</label>
+                {% if user_autograph != '' %}
+                    <input type="text" name="autograph" style="height: 32px; border-radius: 5px; width: 300px" placeholder="{{ user_autograph }}" value="{{ user_autograph }}">
+                {% else %}
+                    <input type="text" name="autograph" style="height: 32px; border-radius: 5px; width: 300px" placeholder="这是你彰显个性的签名">
+                {% endif %}
+            </div>
+            <div class="form-row" style="border-bottom: #e3e3e3 1px solid; margin-top: 30px">
+                <label for="contents" class="required" style="font-weight: bold; float: left; padding: 4px 10px 0 0; width: 160px; font-size: 24px">生日:</label>
+                {% if user_birthday != '' %}
+{#                <p>{{ user_birthday.year }}年{{ user_birthday.month }}月{{ user_birthday.day }}日</p>#}
+                    <div style="height: 32px">
+                        <select name="birthday_year" id="birthday_year">
+
+                        </select>
+                        <span>年</span>
+                        <select name="birthday_month" id="birthday_month">
+
+                        </select>
+                        <span>月</span>
+                        <select name="birthday_day" id="birthday_day">
+
+                        </select>
+                        <span>日</span>
+                    </div>
+                {% else %}
+                    <select name="birthday_year" id="birthday_year">
+
+                    </select>
+                    <span>年</span>
+                    <select name="birthday_month" id="birthday_month">
+
+                    </select>
+                    <span>月</span>
+                    <select name="birthday_day" id="birthday_day">
+
+                    </select>
+                    <span>日</span>
+                {% endif %}
+                <script>
+                    for (let i=2020; i>1969;i--){
+                        if (i === parseInt({{ user_birthday.year }})){
+                            let $newElement=$('<option selected value="'+i+'">'+i+'</option>');
+                            $("#birthday_year").append($newElement)
+                        }else{
+                            let $newElement=$('<option value="'+i+'">'+i+'</option>');
+                            $("#birthday_year").append($newElement)
+                        }
+                    }
+                    for (let i=1; i<13;i++){
+                        if (i === parseInt({{ user_birthday.month }})){
+                            let $newElement=$('<option selected value="'+i+'"> '+i+'</option>');
+                            $("#birthday_month").append($newElement)
+                        }else{
+                            let $newElement=$('<option value="'+i+'">'+i+'</option>');
+                            $("#birthday_month").append($newElement)
+                        }
+
+                    }
+                    for (let i=1; i<32;i++){
+                        if (i === parseInt({{ user_birthday.day }})){
+                            let $newElement=$('<option selected value="'+i+'"> '+i+'</option>');
+                            $("#birthday_day").append($newElement)
+                        }else{
+                            let $newElement=$('<option value="'+i+'">'+i+'</option>');
+                            $("#birthday_day").append($newElement)
+                        }
+                    }
+
+                </script>
+            </div>
+            <div class="form-row" style="border-bottom: #e3e3e3 1px solid; margin-top: 30px">
+                <label for="contents" class="required" style="font-weight: bold; float: left; padding: 4px 10px 0 0; width: 160px; font-size: 24px">性别:</label>
+                    <div style="height: 32px;">
+                {% if user_gender != '' %}
+                    <select name="gender" id="gender">
+
+                    {% if user_gender == '未填写' %}
+                        <option selected value="0">未填写</option>
+                    {% else %}
+                        <option value="0">未填写</option>
+                    {% endif %}
+
+                    {% if user_gender == '男' %}
+                        <option selected value="1">男</option>
+                    {% else %}
+                        <option value="1">男</option>
+                    {% endif %}
+                    {% if user_gender == '女' %}
+                        <option selected value="2">女</option>
+                    {% else %}
+                        <option value="2">女</option>
+                    {% endif %}
+                    {% if user_gender == '不方便透露' %}
+                        <option selected value="3">不方便透露</option>
+                    {% else %}
+                        <option value="3">不方便透露</option>
+                    {% endif %}
+
+                    </select>
+                {% else %}
+                <select name="gender" id="gender">
+                    <option value="0">未填写</option>
+                    <option value="1">男</option>
+                    <option value="2">女</option>
+                    <option value="3">不愿意透露</option>
+                </select>
+                {% endif %}
+                    </div>
+            </div>
+                <script>
+
+                </script>
+
+            <div class="form-row" style="border-bottom: #e3e3e3 1px solid; margin-top: 30px">
+                <label for="contents" class="required" style="font-weight: bold; float: left; padding: 4px 10px 0 0; width: 160px; font-size: 24px">地址:</label>
+                {% if user_address != '' %}
+                <p>{{ user_address }}</p>
+                {% else %}
+                <p>未填写</p>
+                {% endif %}
+            </div>
+
+            <div class="form-row" style="border-bottom: #e3e3e3 1px solid; margin-top: 30px; margin-left: 70px">
+                <input type="submit" class="btn btn-primary" value="确定">
+                <input type="button" id="cancel" class="btn btn-default" style="margin-left: 70px" value="取消">
+                <script>
+                    $("#cancel").click(function () {
+                        $("#modify").addClass('hidden');
+                        $("#nomodify").removeAttr('class');
+                    })
+                </script>
+            </div>
+
+
+            </form>
+        </div>
+
+    </div>
+    </div>
+{% endblock container %}
+{% block page %}
+    <div id="outerdiv" style="position:fixed;top:0;left:0;background:rgba(0,0,0,0.7);z-index:2;width:100%;height:100%;display:none;">
+    <div id="innerdiv" style="position:absolute;">
+        <img id="bigimg" style="border:5px solid #fff;" src="" />
+    </div>
+    </div>
+{% endblock page %}
+
+
+</body>
+</html>
