@@ -86,12 +86,16 @@ class ShowUserInfo(View):
                     day = request.POST['birthday_day']
                     gender = request.POST['gender']
                     print(user_name, autograph, '%s-%s-%s' % (year, month, day), gender)
-                    user_info = UserInformation.objects.filter(user=user[0])[0]
-                    user_info.user_name = user_name
-                    user_info.user_autograph = autograph
-                    user_info.user_gender = int(gender)
-                    user_info.user_birthday = datetime.date(int(year), int(month), int(day))
-                    user_info.save()
+                    user_info = UserInformation.objects.filter(user=user[0])
+                    if user_info:
+                        user_info[0].user_name = user_name
+                        user_info[0].user_autograph = autograph
+                        user_info[0].user_gender = int(gender)
+                        user_info[0].user_birthday = datetime.date(int(year), int(month), int(day))
+                        user_info[0].save()
+                    else:
+                        userInfo = UserInformation.objects.create(user=user[0], user_autograph=autograph, user_gender=int(gender), user_name=user_name, user_birthday=datetime.date(int(year), int(month), int(day)))
+                        userInfo.save()
                     return redirect('/info/')
                 except Exception as e:
                     return render(request, 'base.html', {"title": "err", "message": e})
