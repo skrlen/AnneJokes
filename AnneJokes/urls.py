@@ -11,6 +11,8 @@ from AnneJokes.views.retrieve_password import RetrievePassword
 from AnneJokes.views.upload_joke import UploadJokes
 from AnneJokes.views.userinfo import ShowUserInfo
 from AnneJokes.views.my_joke import MyJoke
+from AnneJokes.views.get_message import GetMessage
+from AnneJokes.views.joke_detail import JokeDetail
 
 
 urlpatterns = [
@@ -26,4 +28,6 @@ urlpatterns = [
     url(r'^upload/$', UploadJokes.as_view()),
     url(r'^info/$', ShowUserInfo.as_view()),
     url(r'^myjoke/$', MyJoke.as_view()),
+    url(r'^message/$', GetMessage.as_view()),
+    url(r'^detail/$', JokeDetail.as_view()),
 ]

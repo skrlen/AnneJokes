@@ -23,7 +23,11 @@ class MyJoke(View):
                 print(data)
                 return render(request, 'my_joke.html', data)
             return render(request, 'base.html', {'title': 'Err-user', "message": '姿势不太对，重新登陆再来一遍'})
-        return render(request, 'base.html', {'title': 'Err-user', "message": 'ip已经被记录，请小心'})
+        if 'HTTP_X_FORWARDER_FOR' in request.META:
+            ip = request.META['HTTP_X_FORWARDER_FOR']
+        else:
+            ip = request.META['REMOTE_ADDR']
+        return render(request, 'base.html', {'title': 'Err-user', "message": 'ip: %s 请先登陆才能查看。' % ip})
 
 
 

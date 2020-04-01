@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect
 from django.views import View
 from AnneJokes.models.user import User
 from AnneJokes.page_nation.pagenation import pager
+from AnneJokes.models.message import FoundMessage
+from django.db.models.query import Q
 
 
 class Index(View):
@@ -13,6 +15,7 @@ class Index(View):
             user_id = request.session._session['user_id']
             user = User.objects.filter(pk=user_id)[0]
             date = dict()
+            date['message_num'] = FoundMessage.objects.filter(Q(user=user), Q(is_read=False)).count()
             date['username'] = user.nickname
             date['head_image'] = user.user_head_image.name
             if user.user_thumb_head_image.name:

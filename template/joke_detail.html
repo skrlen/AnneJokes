@@ -1,0 +1,122 @@
+{% extends 'index.html' %}
+<html lang="zh">
+{% load static from staticfiles %}
+{% block title %}
+    {{ title }}
+{% endblock title %}
+<body>
+{% block container %}
+    <div class="container">
+
+        <div class="thumbnail" id="user_jokes" >
+            <div class="user_img">
+                    {% if joke.user.user_thumb_head_image %}
+                        <img src="/static/media/{{ joke.user.user_thumb_head_image.name }}" class="img-circle" style="width: 30px;" alt="...">
+                    {% else %}
+                        <img src="/static/media/{{ joke.user.user_head_image.name }}" class="img-circle" style="width: 30px;" alt="...">
+                    {% endif %}
+                        <a href="/info/?user_id={{ joke.user.id }}">{{ joke.user.nickname }}</a>{# ----点击用户----- #}
+                </div>
+                <div class="caption">
+                    <p>{{ joke.joke_content }}</p>
+                    <br><br>
+                    <img src="/static/media/{{ joke.joke_image.name }}" class="big-image" style="width: 300px; display: table; margin: 0 auto" alt="加载失败">
+                </div>
+
+                <div class="well" style="margin-top: 50px">
+                    {% for i in comment %}
+
+                        <div class="form-group comment-box{{ i.id }}" id="comment-all{{ joke.id }}">
+                            <label for="recipient-name" class="control-label" id="comment_user{{ i.id }}">
+                                <img src="/static{{ i.user.user_thumb_head_image.url }}" class="img-circle" style="width: 30px" alt="user_headImg{{ i.id }}"><a
+                                href="#" style="margin-left: 15px">{{ i.user.nickname }}: </a><a id="comment2comm{{ i.id }}" style="font-size: 5px;">回复</a></label>
+                                <p style="margin-left: 40px" id="content-detail{{ i.id }}">{{ i.comment }}</p>
+
+                                <script>
+                                        $("#comment2comm{{ i.id }}").click(function () {
+                                            $("#comment2{{ joke.id }}").attr('hidden', 'hidden');
+                                            $("#comment2comment{{ joke.id }}").removeAttr('hidden');
+                                            $("#comment2-c{{ joke.id }}").attr('placeholder', '回复：{{ i.user.nickname }}');
+                                            $("#commentid{{ joke.id }}").attr('value', '{{ i.id }}');
+                                        })
+                                </script>
+                            {% for w in i.comment2comment_set.all %}
+                                <label for="recipient-name" style="margin-left:50px" class="control-label" id="comment_user{{ joke.id }}">
+                                    <img src="/static{{ w.user.user_head_image.url }}" class="img-circle" style="width: 30px" alt="user_headImg{{ joke.id }}">
+                                    <a href="#" style="margin-left: 15px">{{ w.user.nickname }}</a></label>
+                                    <p style="margin-left: 100px" id="content-detail{{ joke.id }}">{{ w.comment }}</p>
+                            {% empty %}
+                            {% endfor %}
+                        </div>
+                    {% empty %}
+                            <p>没有人评论哦，快来抢沙发吧！</p>
+                    {% endfor %}
+                        {% if username %}
+                            <form action="/comment/" id="comment2{{ joke.id }}" method="post">
+                                {% csrf_token %}
+                                  <input type="text" hidden name="joke_id" id="jokeid{{ joke.id }}" value="{{ joke.id }}">
+                                  <input type="text" name="comment" id="comment-c{{ joke.id }}" style="width: 75%;border-radius: 5px;border: 1px solid #e3e3e3; height: 30px" required>
+    {#                                            <input type="submit" id="commit{{ joke.id }}" hidden>#}
+                                {% if username %}
+                                  <button type="button" id="comment-commit{{ joke.id }}" autocomplete="off" class="btn btn-primary" data-loading-text="loading..">评论</button>
+                                {% else %}
+                                {% endif %}
+                                <script>
+                                    $("#comment-commit{{ joke.id }}").click(function () {
+                                        {#$("#commit{{ joke.id }}").click();#}
+
+                                        var $btn = $(this).button('loading');
+                                        addComment($("#jokeid{{ joke.id }}").val(), $("#comment-c{{ joke.id }}").val());
+                                        $("#comment-c{{ joke.id }}").val("");
+                                        $btn.button('reset');
+                                    })
+                                </script>
+                              </form>
+                            <form action="/comment/" hidden id="comment2comment{{ joke.id }}" method="post">
+                                {% csrf_token %}
+                                  <input type="text" hidden name="comment_id{{ joke.id }}" id="commentid{{ joke.id }}">
+                                  <input type="text" name="comment" placeholder="回复：xxx" id="comment2-c{{ joke.id }}" style="width: 75%;border-radius: 5px;border: 1px solid #e3e3e3; height: 30px" required>
+                                {% if username %}
+                                  <button type="button" id="comment2-commit{{ joke.id }}" autocomplete="off" class="btn btn-primary" data-loading-text="loading..">回复</button>
+                                  <button type="button" id="comment2-cancel{{ joke.id }}" autocomplete="off" class="btn btn-default" data-loading-text="loading..">取消</button>
+                                {% else %}
+                                {% endif %}
+                                <script>
+                                    $("#comment2-cancel{{ joke.id }}").click(function () {
+                                        $("#comment2comment{{ joke.id }}").attr('hidden', 'hidden');
+                                        $("#comment2{{ joke.id }}").removeAttr('hidden');
+                                    });
+                                </script>
+                                <script>
+                                    $("#comment2-commit{{ joke.id }}").click(function () {
+                                        var $btn = $(this).button('loading');
+                                        addComment2Comment($("#jokeid{{ joke.id }}").val(), $('#commentid{{ joke.id }}').val() ,$("#comment2-c{{ joke.id }}").val());
+                                        $("#comment2-c{{ joke.id }}").val("");
+                                        $("#comment2comment{{ joke.id }}").attr('hidden', 'hidden');
+                                        $("#comment2{{ joke.id }}").removeAttr('hidden');
+                                        $btn.button('reset');
+                                    })
+                                </script>
+                              </form>
+
+                          {% else %}
+                            <form action="/comment/">
+                              <input type="text" style="width: 75%;border-radius: 5px;border: 1px solid #e3e3e3; height: 30px">
+                              <button type="button" disabled="disabled" id="comment-commit{{ joke.id }}" class="btn btn-primary">评论</button>
+                            </form>
+                          {% endif %}
+
+
+                </div>
+                </div>
+
+    </div>
+
+{% endblock container %}
+{% block page %}
+{% endblock page %}
+{% block footer %}
+    <p style="text-align: center; color: #737373; margin-top: 50px">网站归属权为个人所有，如有侵权，请联系 <span style="color: #ffffff;">skrlen@foxmail.com</span></p>
+{% endblock footer %}
+</body>
+</html>

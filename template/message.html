@@ -1,0 +1,35 @@
+{% extends 'index.html' %}
+<html lang="zh">
+{% load static from staticfiles %}
+{% block title %}
+    {{ title }}
+{% endblock title %}
+<body>
+{% block container %}
+    <div class="container">
+        {% for i in message %}
+        <div class="thumbnail" id="user_jokes">
+            <div class="user_img">
+            </div>
+            <div class="caption">
+                {% if i.user.user_thumb_head_image %}
+                    <img src="/static{{ i.user.user_thumb_head_image.url }}" style="border-radius: 20px; height: 50px" alt="headimg..">
+                {% else %}
+                    <img src="/static{{ i.user.user_head_image.url }}" style="border-radius: 5px" alt="headimg..">
+                {% endif %}
+                  <p>{{ i.user.nickname }} <span>{{ i.message }}</span></p>
+            </div>
+        </div>
+        {% empty %}
+            <p style="text-align: center; color: #5e5e5e; margin-top: 100px">暂时没有你的消息哦！</p>
+        {% endfor %}
+    </div>
+
+{% endblock container %}
+{% block page %}
+{% endblock page %}
+{% block footer %}
+    <p style="text-align: center; color: #737373; margin-top: 850px">网站归属权为个人所有，如有侵权，请联系 <span style="color: #ffffff;">skrlen@foxmail.com</span></p>
+{% endblock footer %}
+</body>
+</html>

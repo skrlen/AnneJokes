@@ -10,6 +10,7 @@ from django.db.models import Q
 from AnneJokes.models.user_joke import UserJokes
 import json
 from AnneJokes.models.comment2comment import Comment2Comment
+from AnneJokes.models.message import FoundMessage
 
 
 class Comments(View):
@@ -48,9 +49,15 @@ class Comments(View):
                 comment = request.POST['comment']
                 joke_comment = JokeComment.objects.filter(id=int(comment_id))
                 user = User.objects.filter(pk=int(user_id))
+
                 if joke_comment and user:
                     comm = Comment2Comment.objects.create(user=user[0], joke_comment=joke_comment[0], comment=comment)
                     comm.save()
+                    if joke_comment[0].id != user[0].id:
+                        msg = FoundMessage.objects.create(user=joke_comment[0].user, from_user=int(user_id),
+                                                          message='%s == 评论了你的评论 %s ------> %s' % (
+                                                          user[0].nickname, comment, joke_comment[0].comment))
+                        msg.save()
                     data = dict()
                     data[comm.id] = [comm.user.nickname, comm.comment, comm.user.user_thumb_head_image.url if comm.user.user_thumb_head_image else comm.user.user_head_image.url]
                     data = json.dumps(data)
@@ -67,6 +74,11 @@ class Comments(View):
                     if joke and user:
                         joke_comment_obj = JokeComment.objects.create(user=user[0], joke=joke[0], comment=joke_comment_content)
                         joke_comment_obj.save()
+                        if user[0].id != joke[0].user.id:
+                            msg = FoundMessage.objects.create(user=joke[0].user, from_user=int(user_id),
+                                                              message='%s 评论了你的文章 %s----->%s' % (
+                                                              user[0].nickname, joke_comment_content, joke[0].joke_content))
+                            msg.save()
                         self_comment = JokeComment.objects.filter(user=user[0]).order_by('-create_at')[0]
                         data = dict()
                         data[self_comment.id] = [self_comment.user.nickname, joke_comment_content, self_comment.user.user_head_image.url]

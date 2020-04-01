@@ -6,6 +6,7 @@ from AnneJokes.models.joke_comment import JokeComment
 from AnneJokes.models.user import User
 from AnneJokes.models.user_joke import UserJokes
 from AnneJokes.models.comment2comment import Comment2Comment
+from AnneJokes.models.message import FoundMessage
 
 
 class JokeInfoCount(View):
@@ -47,6 +48,10 @@ class JokeInfoCount(View):
             if joke and user is not None:
                 joke_type_save = JokeInfo.objects.create(user=user, joke=joke, joke_type=data_type)
                 joke_type_save.save()
+                if user.id != joke.id:
+                    msg = FoundMessage.objects.create(user=joke.user, from_user=user.id,
+                                                      message='%s ---👍点赞了你的发布  %s' % (user.nickname, joke.joke_content))
+                    msg.save()
                 # print(joke_type_save.choice)
                 a = {1: '点赞', 2: '点踩'}
                 return HttpResponse('%s成功' % a[JokeInfo.objects.get(id=joke_type_save.id).joke_type])
