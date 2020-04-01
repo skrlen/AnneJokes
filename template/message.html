@@ -15,7 +15,7 @@
                 {% if i.user.user_thumb_head_image %}
                     <img src="/static{{ i.user.user_thumb_head_image.url }}" style="border-radius: 20px; height: 50px" alt="headimg..">
                 {% else %}
-                    <img src="/static{{ i.user.user_head_image.url }}" style="border-radius: 5px" alt="headimg..">
+                    <img src="/static{{ i.user.user_head_image.url }}" style="border-radius: 5px; height: 50px" alt="headimg..">
                 {% endif %}
                   <p>{{ i.user.nickname }} <span>{{ i.message }}</span></p>
             </div>

@@ -51,6 +51,7 @@
                     {% empty %}
                             <p>没有人评论哦，快来抢沙发吧！</p>
                     {% endfor %}
+                </div>
                         {% if username %}
                             <form action="/comment/" id="comment2{{ joke.id }}" method="post">
                                 {% csrf_token %}
@@ -107,7 +108,7 @@
                           {% endif %}
 
 
-                </div>
+
                 </div>
 
     </div>
