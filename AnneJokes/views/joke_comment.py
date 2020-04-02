@@ -55,11 +55,14 @@ class Comments(View):
                     comm.save()
                     if joke_comment[0].id != user[0].id:
                         msg = FoundMessage.objects.create(user=joke_comment[0].user, from_user=int(user_id),
-                                                          message='%s == 评论了你的评论 %s ------> %s' % (
-                                                          user[0].nickname, comment, joke_comment[0].comment))
+                                                          message='%s 评论了你的评论 %s ---> %s' % (
+                                                          user[0].nickname, comment, joke_comment[0].comment),
+                                                          joke=joke_comment[0].joke)
                         msg.save()
                     data = dict()
-                    data[comm.id] = [comm.user.nickname, comm.comment, comm.user.user_thumb_head_image.url if comm.user.user_thumb_head_image else comm.user.user_head_image.url]
+                    data[comm.id] = [comm.user.nickname, comm.comment,
+                                     comm.user.user_thumb_head_image.url if comm.user.user_thumb_head_image
+                                     else comm.user.user_head_image.url]
                     data = json.dumps(data)
                     return HttpResponse(data)
 
@@ -72,12 +75,13 @@ class Comments(View):
                     joke = UserJokes.objects.filter(pk=int(joke_id))
                     user = User.objects.filter(pk=int(user_id))
                     if joke and user:
-                        joke_comment_obj = JokeComment.objects.create(user=user[0], joke=joke[0], comment=joke_comment_content)
+                        joke_comment_obj = JokeComment.objects.create(user=user[0], joke=joke[0],
+                                                                      comment=joke_comment_content)
                         joke_comment_obj.save()
                         if user[0].id != joke[0].user.id:
                             msg = FoundMessage.objects.create(user=joke[0].user, from_user=int(user_id),
-                                                              message='%s 评论了你的文章 %s----->%s' % (
-                                                              user[0].nickname, joke_comment_content, joke[0].joke_content))
+                                                              message='%s 评论了你的文章 %s' % (
+                                                              user[0].nickname, joke_comment_content), joke=joke[0])
                             msg.save()
                         self_comment = JokeComment.objects.filter(user=user[0]).order_by('-create_at')[0]
                         data = dict()

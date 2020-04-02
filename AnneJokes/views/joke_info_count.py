@@ -50,7 +50,7 @@ class JokeInfoCount(View):
                 joke_type_save.save()
                 if user.id != joke.id:
                     msg = FoundMessage.objects.create(user=joke.user, from_user=user.id,
-                                                      message='%s ---👍点赞了你的发布  %s' % (user.nickname, joke.joke_content))
+                                                      message='%s 👍点赞了你的发布' % user.nickname, joke=joke)
                     msg.save()
                 # print(joke_type_save.choice)
                 a = {1: '点赞', 2: '点踩'}

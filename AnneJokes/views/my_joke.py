@@ -20,7 +20,6 @@ class MyJoke(View):
                     data['thumb_img'] = user[0].user_thumb_head_image.name
                 else:
                     data['thumb_img'] = user[0].user_head_image.name
-                print(data)
                 return render(request, 'my_joke.html', data)
             return render(request, 'base.html', {'title': 'Err-user', "message": '姿势不太对，重新登陆再来一遍'})
         if 'HTTP_X_FORWARDER_FOR' in request.META:

@@ -12,14 +12,14 @@
              <div class="thumbnail" >
             <div class="user_img">
                     {% if i.user.user_thumb_head_image %}
-                        <img src="/static/media/{{ i.user.user_thumb_head_image.name }}" class="img-circle" style="width: 30px;" alt="...">
+                        <img src="/static/media/{{ i.user.user_thumb_head_image.name }}" class="img-circle" style="height: 40px;" alt="...">
                     {% else %}
-                  <img src="/static/media/{{ i.user.user_head_image.name }}" class="img-circle" style="width: 30px;" alt="...">
+                  <img src="/static/media/{{ i.user.user_head_image.name }}" class="img-circle" style="height: 60px;" alt="...">
                     {% endif %}
-                    <a href="/info/?user_id={{ i.user.id }}">{{ i }}</a>{# ----点击用户----- #}
+                    <a href="/info/?user_id={{ i.user.id }}">{{ i.user.nickname }}</a>{# ----点击用户----- #}
                 </div>
               <div class="caption">
-                  <p>{{ i.joke_content }}</p>
+                  <p style="margin-left: 40px">{{ i.joke_content }}</p>
                   <br><br>
                       <img src="/static/media/{{ i.joke_image }}" class="big-image" style="width: 300px; display: table; margin: 0 auto" alt="加载失败">
             </div>

@@ -17,7 +17,7 @@
                 {% else %}
                     <img src="/static{{ i.user.user_head_image.url }}" style="border-radius: 5px; height: 50px" alt="headimg..">
                 {% endif %}
-                  <p>{{ i.user.nickname }} <span>{{ i.message }}</span></p>
+                  <p>{{ i.user.nickname }} <span>{{ i.message }}</span>{% if i.joke %}<a href="/detail/?joke_id={{ i.joke.id }}">from:  {{ i.joke.joke_content }}</a>{% else %}{% endif %}</p>
             </div>
         </div>
         {% empty %}
