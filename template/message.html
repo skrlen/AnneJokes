@@ -7,17 +7,34 @@
 <body>
 {% block container %}
     <div class="container">
+        {% if message %}
+        <p style="text-align: center; font-size: 12px" id="clear_all"><a href="javascript:void(0);" id="clear_all2" data-toggle="modal" data-target="#myModal">清空所有消息</a></p>
+        {% else %}
+        {% endif %}
         {% for i in message %}
-        <div class="thumbnail" id="user_jokes">
+        <div class="thumbnail" id="user_jokes{{ i.id }}">
             <div class="user_img">
             </div>
             <div class="caption">
-                {% if i.user.user_thumb_head_image %}
-                    <img src="/static{{ i.user.user_thumb_head_image.url }}" style="border-radius: 20px; height: 50px" alt="headimg..">
-                {% else %}
-                    <img src="/static{{ i.user.user_head_image.url }}" style="border-radius: 5px; height: 50px" alt="headimg..">
-                {% endif %}
-                  <p>{{ i.user.nickname }} <span>{{ i.message }}</span>{% if i.joke %}<a href="/detail/?joke_id={{ i.joke.id }}">from:  {{ i.joke.joke_content }}</a>{% else %}{% endif %}</p>
+                  <p><span>{{ i.message }}</span>{% if i.joke %}<a href="/detail/?joke_id={{ i.joke.id }}">from:  {{ i.joke.joke_content }}</a>{% else %}{% endif %}<a href="javascript:" id="del{{ i.id }}" style="float: right;">删除</a></p>
+                <script>
+                    $("#del{{ i.id }}").click(function () {
+                        $("#user_jokes{{ i.id }}").addClass('hidden');
+                        $.ajax({
+                            url: '/message/',
+                            type: 'delete',
+                            headers: {
+                                "X-CSRFToken": $('input[name="csrfmiddlewaretoken"]').val()
+                            },
+                            data: {
+                                'message_id': {{ i.id }}
+                            },
+                            success: function (e) {
+                                console.log(e)
+                            }
+                        })
+                    })
+                </script>
             </div>
         </div>
         {% empty %}
@@ -25,11 +42,50 @@
         {% endfor %}
     </div>
 
+    <div class="modal fade" style="margin-top: 200px" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">警告框</h4>
+          </div>
+          <div class="modal-body">
+            <p>你确定要清除所有信息吗？</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" id="cancel" data-dismiss="modal">取消</button>
+            <button type="button" class="btn btn-primary" id="submit">确定</button>
+              <script>
+                  $("#submit").click(function () {
+                        $(".thumbnail").addClass('hidden');
+                        $(".container").append('<p style="text-align: center; color: #5e5e5e; margin-top: 100px">暂时没有你的消息哦！</p>');
+                        $("#clear_all2").text('');
+                        $("#cancel").click();
+                        $.ajax({
+                            url: '/message/',
+                            type: 'delete',
+                            headers: {
+                                "X-CSRFToken": $('input[name="csrfmiddlewaretoken"]').val()
+                            },
+                            data: {
+                                'all_msg': true
+                            },
+                            success: function (e) {
+                                console.log(e)
+                            }
+                        })
+                    })
+              </script>
+          </div>
+        </div>
+      </div>
+    </div>
+
 {% endblock container %}
 {% block page %}
 {% endblock page %}
 {% block footer %}
-    <p style="text-align: center; color: #737373; margin-top: 850px">网站归属权为个人所有，如有侵权，请联系 <span style="color: #ffffff;">skrlen@foxmail.com</span></p>
+    <p style="text-align: center; color: #737373; margin-top: 50px">网站归属权为个人所有，如有侵权，请联系 <span style="color: #eeeeee;">skrlen@foxmail.com</span></p>
 {% endblock footer %}
 </body>
 </html>

@@ -13,4 +13,4 @@ class FoundMessage(models.Model):
     modify_at = models.DateField(auto_now=True)
 
     def __str__(self):
-        return self.user.nickname
+        return self.message

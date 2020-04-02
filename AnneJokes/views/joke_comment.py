@@ -55,7 +55,7 @@ class Comments(View):
                     comm.save()
                     if joke_comment[0].id != user[0].id:
                         msg = FoundMessage.objects.create(user=joke_comment[0].user, from_user=int(user_id),
-                                                          message='%s 评论了你的评论 %s ---> %s' % (
+                                                          message='%s  评论了你的评论  %s ---> %s' % (
                                                           user[0].nickname, comment, joke_comment[0].comment),
                                                           joke=joke_comment[0].joke)
                         msg.save()
@@ -80,7 +80,7 @@ class Comments(View):
                         joke_comment_obj.save()
                         if user[0].id != joke[0].user.id:
                             msg = FoundMessage.objects.create(user=joke[0].user, from_user=int(user_id),
-                                                              message='%s 评论了你的文章 %s' % (
+                                                              message='%s  评论了你的文章  %s' % (
                                                               user[0].nickname, joke_comment_content), joke=joke[0])
                             msg.save()
                         self_comment = JokeComment.objects.filter(user=user[0]).order_by('-create_at')[0]

@@ -4,6 +4,7 @@ from AnneJokes.models.message import FoundMessage
 from django.views import View
 from django.shortcuts import render
 from django.http import QueryDict
+from django.http.response import HttpResponse
 
 
 class GetMessage(View):
@@ -40,8 +41,15 @@ class GetMessage(View):
             user = User.objects.filter(id=request.session._session['user_id'])
             if user:
                 msg = QueryDict(request.body)
-                if msg.get('msg_id'):
-                    print(msg.get('msg_id'))
-                    return '成功'
+                if msg.get('message_id'):
+                    msg = FoundMessage.objects.filter(id=int(msg.get('message_id')))
+                    msg[0].delete()
+                    return HttpResponse('成功')
+                if msg.get('all_msg'):
+                    msg_all = FoundMessage.objects.filter(user=user[0])
+                    msg_all.delete()
+                    return HttpResponse('全部删除')
+                return HttpResponse('失败')
 
             return render(request, 'base.html', {'title': 'err-msg', 'message': '错误的用户请求'})
+        return render(request, 'base.html', {'title': 'err-msg', 'message': '权限不足'})
