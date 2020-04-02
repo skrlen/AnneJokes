@@ -521,12 +521,12 @@
                                               for (let c2c=0; c2c<q[key][3].length; c2c++){
                                                   {#console.log(q[key][3][c2c]);#}
                                                   btitle += '<label for="recipient-name" style="margin-left:50px" class="control-label" id="comment_user{{ joke.id }}"><img src="/static'+q[key][3][c2c][2]+'" class="img-circle" style="width: 30px" alt="user_headImg{{ joke.id }}"><a\n' +
-                                                  'href="#" style="margin-left: 15px">'+q[key][3][c2c][0]+'：</a></label>\n' +
+                                                  'href="/info/?user_id='+q[key][3][c2c][3]+'" style="margin-left: 15px">'+q[key][3][c2c][0]+'：</a></label>\n' +
                                                   '<p style="margin-left: 100px" id="content-detail{{ joke.id }}">'+q[key][3][c2c][1]+'</p>\n'
                                               }
                                               let element = '<div class="form-group comment-box'+key+'" id="comment-all{{ joke.id }}">\n' +
                                                   '<label for="recipient-name" class="control-label" id="comment_user{{ joke.id }}"><img src="/static'+q[key][2]+'" class="img-circle" style="width: 30px" alt="user_headImg{{ joke.id }}"><a\n' +
-                                                  'href="#" style="margin-left: 15px">'+q[key][0]+'：</a"><a id="comment2comm'+key+'" style="font-size: 5px;">回复</a></label>\n' +
+                                                  'href="/info/?user_id='+q[key][4]+'" style="margin-left: 15px">'+q[key][0]+'：</a"><a id="comment2comm'+key+'" style="font-size: 5px;">回复</a></label>\n' +
                                                   '<p style="margin-left: 40px" id="content-detail{{ joke.id }}">'+q[key][1]+'</p>\n' +btitle+
                                                   '</div>'+'<script>\n' +
                                                   '$("#comment2comm'+key+'").click(function () {\n' +

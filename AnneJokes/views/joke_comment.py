@@ -24,8 +24,8 @@ class Comments(View):
         for i in comments:
             c2c = []
             for w in i.comment2comment_set.all():
-                c2c.append([w.user.nickname, w.comment, w.user.user_head_image.url])
-            comm[i.id] = [i.user.nickname, i.comment, i.user.user_head_image.url, c2c]
+                c2c.append([w.user.nickname, w.comment, w.user.user_head_image.url, w.user.id])
+            comm[i.id] = [i.user.nickname, i.comment, i.user.user_head_image.url, c2c, i.user.id]
         js = json.dumps(comm)
         return HttpResponse(js)
 
