@@ -6,7 +6,7 @@ from django.http.response import HttpResponse
 from AnneJokes.method.hashlib_md5 import str_md5
 from AnneJokes.method.email import send_html_mail
 from AnneJokes.method.email import send_mails
-from AnneJokes.script.collect import collect
+# from AnneJokes.script.collect import collect
 
 
 class Register(View):
@@ -37,7 +37,7 @@ class Register(View):
                 password_md5 = str_md5(password)
                 user = User.objects.create(email=email, password=password_md5, nickname=nickname, user_head_image=headimage, user_state=True)
                 user.save()
-                collect()
+                # collect()
                 request.session['user_id'] = user.id
                 # activate_str = str_md5(email)
                 # title = "AnneJoke<skrlen@126.com>"

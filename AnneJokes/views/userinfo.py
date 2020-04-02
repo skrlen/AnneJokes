@@ -3,7 +3,6 @@ from AnneJokes.models.user import User
 from AnneJokes.models.user_joke import UserJokes
 from AnneJokes.models.user_information import UserInformation
 from AnneJokes.models.joke_info import JokeInfo
-from AnneJokes.page_nation.pagenation import pager_user_info
 from django.views import View
 from django.shortcuts import render, redirect
 import random
@@ -30,7 +29,7 @@ class ShowUserInfo(View):
                 counts = UserJokes.objects.filter(user=user[0])
                 data['count'] = counts.count()
                 data['zan'] = JokeInfo.objects.filter(user=user[0], joke_type=1).count()
-                data['pages'] = UserJokes.objects.filter(user=user[0]).order_by('-create_at')
+                data['pages'] = UserJokes.objects.filter(user=user[0]).order_by('-create_at')[:10 if UserJokes.objects.filter(user=user[0]).count() > 10 else UserJokes.objects.filter(user=user[0]).count()]
                 if 'user_id' in request.session._session:
                     # 判断当前用户是否登陆
                     usered = User.objects.filter(pk=request.session._session['user_id'])
@@ -43,11 +42,11 @@ class ShowUserInfo(View):
                         data['modify'] = 1
                 # # data['background_image'] = '/media/background'+str(random.randrange(1, 5))+'.jpg'
                 # data['color'] = random.choices(['#e4b9b9', '#269abc', '#737373', '#eeeeee'])
-                if usered[0].user_thumb_head_image.name:
-                    data['thumb_img'] = usered[0].user_thumb_head_image.name
-                else:
-                    data['thumb_img'] = usered[0].user_head_image.name
-                return render(request, 'userInfo.html', data)
+                    if usered[0].user_thumb_head_image.name:
+                        data['thumb_img'] = usered[0].user_thumb_head_image.name
+                    else:
+                        data['thumb_img'] = usered[0].user_head_image.name
+                    return render(request, 'userInfo.html', data)
             return render(request, 'base.html', {'message': '错误的用户', 'title': 'Errors, No Users'})
         if 'user_id' in request.session._session:
             user = User.objects.filter(pk=request.session._session['user_id'])
@@ -68,7 +67,7 @@ class ShowUserInfo(View):
                 data['user_username'] = user[0].nickname
                 data['user_head_image'] = user[0].user_head_image.url
                 counts = UserJokes.objects.filter(user=user[0])
-                data['pages'] = counts.order_by('-create_at')
+                data['pages'] = counts.order_by('-create_at')[:10 if counts.count() > 10 else counts.count()]
                 data['count'] = counts.count()
                 data['zan'] = JokeInfo.objects.filter(user=user[0], joke_type=1).count()
                 # data['background_image'] = '/media/background'+str(random.randrange(1, 5))+'.jpg'

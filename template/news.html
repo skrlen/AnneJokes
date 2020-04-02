@@ -1,0 +1,36 @@
+{% extends 'index.html' %}
+<html lang="zh">
+{% load static from staticfiles %}
+{% block title %}
+    {{ title }}
+{% endblock title %}
+<body>
+{% block container %}
+    <div class="container">
+    <p style="text-align: center">最新的新闻.</p>
+    {% for i in data %}
+        {{ i }}
+    {% endfor %}
+        {% for i in data %}
+             <div class="thumbnail" >
+            <div class="user_img">
+                  <img src="{{  }}" class="img-circle" style="height: 60px;" alt="...">
+                    <a href=""></a>{# ----点击用户----- #}
+                </div>
+              <div class="caption">
+                  <p style="margin-left: 40px">{{ i.joke_content }}</p>
+                  <br><br>
+                      <img src="/static/media/{{ i.joke_image }}" class="big-image" style="width: 300px; display: table; margin: 0 auto" alt="加载失败">
+            </div>
+                </div>
+        {% empty %}
+            <p style="text-align: center">你知道吗？许多的未知尚待探索</p>
+            <br>
+            <br>
+        {% endfor %}
+    </div>
+{% endblock container %}
+{% block page %}
+{% endblock page %}
+</body>
+</html>

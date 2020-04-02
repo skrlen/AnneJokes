@@ -10,35 +10,42 @@ def pager(index: int, user: object = None, count: int = 10):
     # .order_by('-create_at')
     """
     判断是否有用户，如果有则只显示未看过的，如果没有则显示所有，按时间倒叙， 如果用户看完了所有的则显示所有的jokes
+    暂停使用推荐，现在改为自由固定
     :param index: 当前观看第几页
     :param user: 是用户还是游客，如果是用户则返回未看的，如果是游客返回所有
     :param count: 每页多少个， 默认为10
     :return: pages：当前页数据， p_list: 当前页码， index：索引
     """
-    if user:
-        already = [i.joke_id if i else None for i in UserJokeRead.objects.filter(user=user)]
-        all_joke = UserJokes.objects.exclude(pk__in=already).order_by('-create_at').filter(joke_states=1)
-        if all_joke:
-            p = Paginator(all_joke, count)
-            pages = p.page(index)
-            p_list = p.page_range
-            for i in pages:
-                obj = UserJokeRead.objects.create(user=user, joke_id=i.id)
-                obj.save()
-            return pages, p_list, index
-        else:
-            all_joke = UserJokes.objects.order_by('-create_at')
-            p = Paginator(all_joke, count)
-            pages = p.page(index)
-            p_list = p.page_range
-            return pages, p_list, index
 
-    else:
-        all_joke = UserJokes.objects.order_by('-create_at')
-        p = Paginator(all_joke, count)
-        pages = p.page(index)
-        p_list = p.page_range
-        return pages, p_list, index
+    joke = UserJokes.objects.all()
+    p = Paginator(joke, count)
+    pages = p.page(index)
+    p_list = p.page_range
+    return pages, p_list, index
+    # if user:
+    #     already = [i.joke_id if i else None for i in UserJokeRead.objects.filter(user=user)]
+    #     all_joke = UserJokes.objects.exclude(pk__in=already).order_by('-create_at').filter(joke_states=1)
+    #     if all_joke:
+    #         p = Paginator(all_joke, count)
+    #         pages = p.page(index)
+    #         p_list = p.page_range
+    #         for i in pages:
+    #             obj = UserJokeRead.objects.create(user=user, joke_id=i.id)
+    #             obj.save()
+    #         return pages, p_list, index
+    #     else:
+    #         all_joke = UserJokes.objects.order_by('-create_at')
+    #         p = Paginator(all_joke, count)
+    #         pages = p.page(index)
+    #         p_list = p.page_range
+    #         return pages, p_list, index
+    #
+    # else:
+    #     all_joke = UserJokes.objects.order_by('-create_at')
+    #     p = Paginator(all_joke, count)
+    #     pages = p.page(index)
+    #     p_list = p.page_range
+    #     return pages, p_list, index
 
 
 def pager_user_info(index: int, user: object, count: 10):

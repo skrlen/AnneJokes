@@ -4,7 +4,7 @@ from AnneJokes.models.user_joke import UserJokes
 from django.http.response import HttpResponse
 from django.shortcuts import render
 from django.views import View
-from AnneJokes.script.collect import collect
+# from AnneJokes.script.collect import collect
 
 
 class UploadJokes(View):
@@ -15,9 +15,11 @@ class UploadJokes(View):
                 users = dict()
                 users['username'] = user[0].nickname
                 users['user_level'] = user[0].user_level
-                head_image = user[0]
-                users['head_image'] = head_image.user_head_image
-                users['thumb_img'] = head_image.user_thumb_head_image
+                users['head_image'] = user[0].user_head_image.name
+                if user[0].user_thumb_head_image.name:
+                    users['thumb_img'] = user[0].user_thumb_head_image.name
+                else:
+                    users['thumb_img'] = user[0].user_head_image.name
                 return render(request, 'upload_joke.html', users)
             return render(request, 'upload_joke.html')
         return render(request, 'upload_joke.html')
@@ -32,7 +34,7 @@ class UploadJokes(View):
                                                 joke_states=1
                                                 )
                 joke.save()
-                collect()
+                # collect()
                 users = dict()
                 users['username'] = user[0].nickname
                 users['user_level'] = user[0].user_level
