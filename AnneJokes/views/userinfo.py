@@ -2,6 +2,7 @@
 from AnneJokes.models.user import User
 from AnneJokes.models.user_joke import UserJokes
 from AnneJokes.models.user_information import UserInformation
+from AnneJokes.models.joke_info import JokeInfo
 from AnneJokes.page_nation.pagenation import pager_user_info
 from django.views import View
 from django.shortcuts import render, redirect
@@ -26,24 +27,26 @@ class ShowUserInfo(View):
                 data['user_country'] = info[0].user_country if info else ''
                 data['user_username'] = user[0].nickname
                 data['user_head_image'] = user[0].user_head_image.url
-
-                # page, p_list, index = pager_user_info(int(request.GET['page']), user[0], count=10)
-                # data['user_page'] = page
-                # data['user_p_list'] = p_list
-                # data['index'] = index
-                data['pages'] = UserJokes.objects.filter(user=user[0])
-                # print(info[0].get_user_gender_display())
+                counts = UserJokes.objects.filter(user=user[0])
+                data['count'] = counts.count()
+                data['zan'] = JokeInfo.objects.filter(user=user[0], joke_type=1).count()
+                data['pages'] = UserJokes.objects.filter(user=user[0]).order_by('-create_at')
                 if 'user_id' in request.session._session:
                     # 判断当前用户是否登陆
-                    user = User.objects.filter(pk=request.session._session['user_id'])
-                    data['username'] = user[0].nickname
-                    data['head_image'] = user[0].user_head_image.url
-                # data['background_image'] = '/media/background'+str(random.randrange(1, 5))+'.jpg'
-                data['color'] = random.choices(['#e4b9b9', '#269abc', '#737373', '#eeeeee'])
-                if user[0].user_thumb_head_image.name:
-                    data['thumb_img'] = user[0].user_thumb_head_image.name
+                    usered = User.objects.filter(pk=request.session._session['user_id'])
+                    data['username'] = usered[0].nickname
+                    data['head_image'] = usered[0].user_head_image.url
+                    if user[0].id == usered[0].id:
+                        data['modify'] = 2
+                        data['user_id'] = usered[0].id
+                    else:
+                        data['modify'] = 1
+                # # data['background_image'] = '/media/background'+str(random.randrange(1, 5))+'.jpg'
+                # data['color'] = random.choices(['#e4b9b9', '#269abc', '#737373', '#eeeeee'])
+                if usered[0].user_thumb_head_image.name:
+                    data['thumb_img'] = usered[0].user_thumb_head_image.name
                 else:
-                    data['thumb_img'] = user[0].user_head_image.name
+                    data['thumb_img'] = usered[0].user_head_image.name
                 return render(request, 'userInfo.html', data)
             return render(request, 'base.html', {'message': '错误的用户', 'title': 'Errors, No Users'})
         if 'user_id' in request.session._session:
@@ -58,12 +61,16 @@ class ShowUserInfo(View):
                 data['user_address'] = info[0].user_address if info else ''
                 data['user_autograph'] = info[0].user_autograph if info else ''
                 data['user_country'] = info[0].user_country if info else ''
-                # print(info[0].get_user_gender_display())
+                data['modify'] = 2
                 data['user_id'] = user[0].id
                 data['username'] = user[0].nickname
                 data['head_image'] = user[0].user_head_image.url
                 data['user_username'] = user[0].nickname
                 data['user_head_image'] = user[0].user_head_image.url
+                counts = UserJokes.objects.filter(user=user[0])
+                data['pages'] = counts.order_by('-create_at')
+                data['count'] = counts.count()
+                data['zan'] = JokeInfo.objects.filter(user=user[0], joke_type=1).count()
                 # data['background_image'] = '/media/background'+str(random.randrange(1, 5))+'.jpg'
                 data['color'] = random.choices(['#e4b9b9', '#269abc', '#737373', '#eeeeee'])
                 if user[0].user_thumb_head_image.name:

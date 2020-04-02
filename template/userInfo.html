@@ -11,7 +11,14 @@
     <div class="container">
         <div align="center">
             <img class="img-circle big-image" style="height: 200px" src="/static{{ user_head_image }}" alt="please wait">
-            <p id="username">{{ user_username }}<a style="font-size: 12px" id="start_modify">修改</a></p>
+            <p id="username">{{ user_username }}
+            {% if modify == 1 %}
+            {% else %}
+                <a style="font-size: 12px" id="start_modify">修改</a>
+            {% endif %}
+            </p>
+
+            <p><span style="font-size: 14px">累计发布：{{ count }}</span> | <span style="font-size: 14px">累计获赞：{{ zan }}</span></p>
         </div>
     {% if user_id %}
         <script>
