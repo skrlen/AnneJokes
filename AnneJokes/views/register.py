@@ -6,7 +6,7 @@ from django.http.response import HttpResponse
 from AnneJokes.method.hashlib_md5 import str_md5
 from AnneJokes.method.email import send_html_mail
 from AnneJokes.method.email import send_mails
-# from AnneJokes.script.collect import collect
+from AnneJokes.script.collect import collect
 
 
 class Register(View):
@@ -31,13 +31,15 @@ class Register(View):
         if "email_state" in request.COOKIES:
             if request.COOKIES['email_state'] == '1':
                 email = request.POST['email']
+                if User.objects.filter(email=email):
+                    return render(request, 'base.html', {'title': 'msg-err', 'message': '账号已经被注册过了， 请重试'})
                 password = request.POST['first-password']
                 nickname = request.POST['nickname']
                 headimage = request.FILES['headimage']
                 password_md5 = str_md5(password)
                 user = User.objects.create(email=email, password=password_md5, nickname=nickname, user_head_image=headimage, user_state=True)
                 user.save()
-                # collect()
+                collect()
                 request.session['user_id'] = user.id
                 # activate_str = str_md5(email)
                 # title = "AnneJoke<skrlen@126.com>"

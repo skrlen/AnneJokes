@@ -17,7 +17,7 @@ def pager(index: int, user: object = None, count: int = 10):
     :return: pages：当前页数据， p_list: 当前页码， index：索引
     """
 
-    joke = UserJokes.objects.all()
+    joke = UserJokes.objects.all().order_by('-create_at')
     p = Paginator(joke, count)
     pages = p.page(index)
     p_list = p.page_range
